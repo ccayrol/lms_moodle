@@ -21,21 +21,7 @@ def choisir_fichier():
     # Si un fichier a été sélectionné, lire son contenu
     if chemin_fichier:
         controle_coherence(chemin_fichier)
-
-
     
-
-if __name__ == "__main__":
-    # Créer une fenêtre principale
-    fenetre = tk.Tk()
-    fenetre.title("Lire un fichier CSV")
-
-    # Créer un bouton pour choisir le fichier CSV
-    bouton_choisir = tk.Button(fenetre, text="Choisir un fichier CSV", command=choisir_fichier)
-    bouton_choisir.pack(pady=10)
-
-    # Lancer la boucle principale de l'interface graphique
-    fenetre.mainloop()
     
     
     
@@ -50,6 +36,13 @@ if __name__ == "__main__":
 # liste_de_paires[] 
 # liste_de_paires.append(("test_Prenom", (10, 20)))
 # liste_de_paires.append(("test_Nom", (30, 40)))
+
+#Une fois que cette liste est complète, parcourir cette liste en appelant la fonction write_on_existing_pdf
+#exemple :
+# for texte_a_inserer, coordonnees in liste_de_paires :
+#    x, y = coordonnees
+#    write_on_existing_pdf(input_pdf, texte_a_inserer, x, y, output_pdf)
+
 
 
 def write_on_existing_pdf(input_pdf, text, x, y, output_pdf):
@@ -91,5 +84,41 @@ def write_on_existing_pdf(input_pdf, text, x, y, output_pdf):
         print("Une erreur s'est produite :", e)
         
 
-# Appel de la fonction avec le nom du fichier PDF existant, le texte à écrire, les coordonnées x et y spécifiques, et le nom du fichier de sortie
-write_on_existing_pdf("input.pdf", "Ceci est du texte ajouté à des coordonnées précises.", 100, 750, "output.pdf")
+# DEROULER DE TOUT L'ALGORITHME
+# VERSION FINALE DOIT SE COMPOSER :
+#   - Recupération fichier csv en passant par l'utilisateur
+#   - Effectuer controle de coherence sur les donnees
+#   - Implementer la liste de texte coordonnees
+#   - Boucler dessus pour ajouter chaque élément au bon emplacement
+
+
+
+
+# Recupération fichier csv en passant par l'utilisateur
+if __name__ == "__main__":
+    # Créer une fenêtre principale
+    fenetre = tk.Tk()
+    fenetre.title("Lire un fichier CSV")
+
+    # Créer un bouton pour choisir le fichier CSV
+    bouton_choisir = tk.Button(fenetre, text="Choisir un fichier CSV", command=choisir_fichier)
+    bouton_choisir.pack(pady=10)
+
+    # Lancer la boucle principale de l'interface graphique
+    fenetre.mainloop()
+
+    
+#TODO : Effectuer controle de coherence sur les donnees
+
+    
+# Implementer la liste de texte coordonnees, exemple ici    
+liste_de_paires = [] 
+liste_de_paires.append(("test_Prenom", (10, 20)))
+liste_de_paires.append(("test_Nom", (30, 40)))
+
+
+# Boucler dessus pour ajouter chaque élément au bon emplacement
+for texte_a_inserer, coordonnees in liste_de_paires :
+    x, y = coordonnees
+    write_on_existing_pdf("input.pdf", texte_a_inserer, x, y, "output.pdf")
+
