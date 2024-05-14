@@ -1,27 +1,17 @@
 import csv
 import PyPDF2
-from PyPDF2.generic import RectangleObject
-from reportlab.lib.colors import black
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfbase import pdfmetrics
-from pdfminer.high_level import extract_text, extract_pages
-from pdfminer.layout import LTText
-from pdfminer.layout import LTTextLine
-from docx import Document
-from docx.shared import Pt
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx2pdf import convert
 import subprocess
 import tkinter as tk
 from tkinter import filedialog
-from decimal import Decimal
-import pdfplumber
-import os
-import re
 import io
+import os
 
+
+
+def simplification_fichier_csv(fichier_csv) : 
+    return
 
 def controle_coherence(fichier_csv, liste_coordonnees_texte) :
     try : 
@@ -49,20 +39,30 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
 def choisir_fichier():
     # Ouvrir une boîte de dialogue pour choisir le fichier CSV
     chemin_fichier = filedialog.askopenfilename(filetypes=[("Fichiers CSV", "*.csv")])
-
+    
     # Si un fichier a été sélectionné, lire son contenu
     if chemin_fichier:
+        repertoire_fichier = os.path.dirname(chemin_fichier)
+        print("repertoire fichier = "+repertoire_fichier)
+        output_fichier = repertoire_fichier +"\\output.pdf"
         liste_de_paires = [] 
         liste_de_paires.append((2, (51,63), "numetud"))
         liste_de_paires.append((2, (36,69),"test_Nom"))
         liste_de_paires.append((2, (112,69), "test_Prenom"))
         liste_de_paires.append((2, (43,74), "Francais"))
+        liste_de_paires.append((2, (54,85),""))   # NATIONNALITE
+        liste_de_paires.append((2, (54,85),""))   # ETAPE D ETUDE
+        liste_de_paires.append((2, (68,90),""))   # VOTRE UF 
+        liste_de_paires.append((2, (72,100),""))  # ADRESSE PERMARNENTE ETUDIANT
+        
 
         print("ready to write on pdf\n")
 
-        write_data_to_pdf('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', "output.pdf", chemin_fichier, liste_de_paires)
+        write_data_to_pdf('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', output_fichier, chemin_fichier, liste_de_paires)
 
         print( "traitement terminé")
+        fenetre.quit()  # Quitter la boucle principale de l'interface graphique
+        fenetre.destroy()  # Détruire la fenêtre principale
         
         
 
@@ -72,16 +72,6 @@ def choisir_fichier():
 def mm_to_points(mm):
     # Conversion de millimètres en points (1 mm = 2.83465 points)
     return mm * 2.83465
-
-def find_keyword_position(pdf_path, keyword):
-    positions = []
-    with pdfplumber.open(pdf_path) as pdf:
-        for page_num in range(len(pdf.pages)):
-            page = pdf.pages[page_num]
-            for word in page.extract_words():
-                if word['text'] == keyword:
-                    positions.append((page_num + 1,float(word['x0']), float(word['top'])))
-    return positions
 
 
 def write_data_to_pdf(input_pdf, output_pdf, chemin_fichier, liste_coordonnees_texte):
@@ -109,7 +99,7 @@ def write_data_to_pdf(input_pdf, output_pdf, chemin_fichier, liste_coordonnees_t
             with open(output_pdf, 'wb') as output_file:
                 writer.write(output_file)
                 
-            subprocess.Popen(['start', '', output_pdf], shell=True)
+           # subprocess.Popen(['start', '', output_pdf], shell=True)
                     
     except Exception as e:
         print("Une erreur est survenue lors de l'ajout de données au PDF :", e)
@@ -138,12 +128,5 @@ if __name__ == "__main__":
 
     # Lancer la boucle principale de l'interface graphique
     fenetre.mainloop()
-
-    
-#TODO : Effectuer controle de coherence sur les donnees
-
-
-
-
-# Implementer la liste de texte coordonnees, exemple ici    
+ 
 
