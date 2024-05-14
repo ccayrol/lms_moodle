@@ -91,28 +91,25 @@ def find_keyword_position(pdf_path, keyword):
     return positions
 
 
-def write_data_to_pdf(input_pdf, output_pdf, keyword, data):
-    position_keyword = find_keyword_position(input_pdf ,keyword)
+def write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte):
     try :
         with open(input_pdf, 'rb') as file :
 
             reader = PyPDF2.PdfReader(file)
             writer = PyPDF2.PdfWriter()
-            
             for page_num in range(len(reader.pages)):
                 page = reader.pages[page_num]
                 # Rechercher le mot-clé et ajouter les données supplémentaires si trouvé
-                if keyword in page.extract_text():
-                    print(str(keyword) + " trouve à la page "+ str(page_num)) 
-                    for page_numero, x, y in position_keyword :
-                        if (page_numero-1) == page_num :
-                            packet = io.BytesIO()
-                            can = canvas.Canvas(packet, pagesize=letter)
-                            can.drawString(x+30, mm_to_points(297) - (y+5), data)  # Ajouter à une position spécifique
-                            can.save()
-                            packet.seek(0)
-                            new_pdf = PyPDF2.PdfReader(packet)
-                            page.merge_page(new_pdf.pages[0])
+                for page_numero, coordonnees, texte_a_inserer in liste_coordonnees_texte :
+                    x,y = coordonnees
+                    if page_numero == page_num :    
+                        packet = io.BytesIO()
+                        can = canvas.Canvas(packet, pagesize=letter)
+                        can.drawString(mm_to_points(x)+10, mm_to_points(297) - mm_to_points(y) - 5, texte_a_inserer)  # Ajouter à une position spécifique
+                        can.save()
+                        packet.seek(0)
+                        new_pdf = PyPDF2.PdfReader(packet)
+                        page.merge_page(new_pdf.pages[0])
                 writer.add_page(page)
             # Enregistrement du fichier PDF de sortie
             with open(output_pdf, 'wb') as output_file:
@@ -156,8 +153,10 @@ if __name__ == "__main__":
 
 # Implementer la liste de texte coordonnees, exemple ici    
 liste_de_paires = [] 
-liste_de_paires.append(("Prénom","test_Prenom", 2))
-liste_de_paires.append(("Nom", "test_Nom", 2))
+liste_de_paires.append((2, (51,63), "numetud"))
+liste_de_paires.append((2, (36,69),"test_Nom"))
+liste_de_paires.append((2, (112,69), "test_Prenom"))
+liste_de_paires.append((2, (43,74), "Francais"))
 
 print("ready to write on pdf\n")
 
@@ -168,6 +167,6 @@ print("Positions de 'Prénom':", positions_prenom)
 
 
 
-write_data_to_pdf('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', "output.pdf", "Prénom", "Jean")
+write_data_to_pdf('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', "output.pdf", liste_de_paires)
 
 print( "traitement terminé")
