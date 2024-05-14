@@ -90,28 +90,6 @@ def find_keyword_position(pdf_path, keyword):
                     positions.append((page_num + 1,float(word['x0']), float(word['top'])))
     return positions
 
-def ecrire_sur_pdf(input_pdf_path, data) :
-    packet = io.BytesIO()
-    can = canvas.Canvas(packet, pagesize=letter)
-    can.drawString(10, 100, "Hello world")
-    can.save()
-
-    #move to the beginning of the StringIO buffer
-    packet.seek(0)
-
-    # create a new PDF with Reportlab
-    new_pdf = PyPDF2.PdfReader(packet)
-    # read your existing PDF
-    existing_pdf = PyPDF2.PdfReader(open(input_pdf_path, "rb"))
-    output = PyPDF2.PdfWriter()
-    # add the "watermark" (which is the new pdf) on the existing page
-    page = existing_pdf.pages[0]
-    page.merge_page(new_pdf.pages[0])
-    output.add_page(page)
-    # finally, write "output" to a real file
-    output_stream = open("destination.pdf", "wb")
-    output.write(output_stream)
-    subprocess.Popen(['start', '', output], shell=True)
 
 def write_data_to_pdf(input_pdf, output_pdf, keyword, data):
     position_keyword = find_keyword_position(input_pdf ,keyword)
@@ -145,68 +123,6 @@ def write_data_to_pdf(input_pdf, output_pdf, keyword, data):
     except Exception as e:
         print("Une erreur est survenue lors de l'ajout de données au PDF :", e)
         
-    
-
- 
-
-        
-def create_pdf_final(input_pdf, output_pdf, liste_paire) :
-    numero_page_active = 0
-    try :
-        with open(input_pdf, 'rb') as file :
-            reader = PdfReader(file)
-            writer = PdfWriter()
-            c= None
-            
-            for balise, texte_a_inserer, numero_de_page in liste_paire:
-                position_balise = find_word_position(input_pdf, balise)
-                print("position balise x = "+ position_balise[0])
-                print("position balise y = "+ position_balise[1])
-                position_texte_a_inserer = (position_balise[0]+10, position_balise[1])
-                for page_num, page in enumerate(reader.pages):
-                    writer.add_page(page)
-                    page_text = page.extract_text()
-                    print("texte a inserer : "+texte_a_inserer)
-                    print("numero page : " + str(page_num))
-                    print(page_text)
-                    if c is None:
-                        c = canvas.Canvas(output_pdf, pagesize=letter)
-                        c.setFillColor('black')
-                        pdfmetrics.registerFont(TTFont('Arial', 'Arial.ttf'))
-                        c.setFont("Arial", 12)
-                    x = position_texte_a_inserer[0]
-                    y = position_texte_a_inserer[1]
-                    print("x = "+ str(position_texte_a_inserer[0]))
-                    print("y = "+ str(position_texte_a_inserer[1]))
-                    c.drawString(x, y, texte_a_inserer)
-                    if(numero_page_active != page_num) :
-                        c.showPage()
-                        numero_page_active += 1
-                        c.save()
-                        subprocess.Popen(['start', '', output_pdf], shell=True)
-                        print("Le programme est en pause. Appuyez sur Entrée pour continuer...")
-                        input()  # Attend que l'utilisateur appuie sur Entrée
-                        print("L'exécution du programme continue...")
-                        c = canvas.Canvas(output_pdf, pagesize=letter)
-                        c.setFillColor('black')
-                        pdfmetrics.registerFont(TTFont('Arial', 'Arial.ttf'))
-                        c.setFont("Arial", 12)
-            c.save()
-            
-            # Écrire le contenu final dans le fichier de sortie
-            with open(output_pdf, 'wb') as output_file:
-                writer.write(output_file)
-                
-            subprocess.Popen(['start', '', output_pdf], shell=True)
-    
-    except FileNotFoundError:
-        print("Le fichier spécifié n'a pas été trouvé.")
-    except Exception as e:
-        print("Une erreur s'est produite :", e)
-                    
-        
-
-
         
 
 # DEROULER DE TOUT L'ALGORITHME
