@@ -23,7 +23,7 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
             for ligne in reader :
                 for element in ligne : 
                     cpt += 1 
-                    if cpt >= 33 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
+                    if cpt >= 97 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
                         num_page, coordonnees, _ = liste_coordonnees_texte[cpt_liste_coordonnees]
                         nouvel_element = (num_page,coordonnees,element)
                         liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
@@ -126,12 +126,77 @@ def choisir_fichier():
         liste_de_paires.append((3, (74, 204),""))    # DATE FIN INTERRUPTION 53
         liste_de_paires.append((3, (112, 211),""))    # DUREE EFFECTIF DU STAGES EN HEURES 54
         liste_de_paires.append((3, (85.5, 224),""))    # NOMBRE DE JOUR DE TRAVAIL HEBDO 55
-        liste_de_paires.append((3, (50.5, 228.1),""))    # TEMPS DE TRAVAIL = TEMPS PLEINS 56
-        liste_de_paires.append((3, (69.3, 228.1),""))    # TEMPS DE TRAVAIL = TEMPS PARTIEL 57
+        liste_de_paires.append((3, (50.5, 228),""))    # TEMPS DE TRAVAIL = TEMPS PLEINS 56
+        liste_de_paires.append((3, (69.4, 228),""))    # TEMPS DE TRAVAIL = TEMPS PARTIEL 57
         liste_de_paires.append((3, (73, 234),""))    # NOMBRE D HEURE HEBDOMADAIRE 58
         liste_de_paires.append((3, (78, 244),""))    # COMMENTAIRE SUR LE TEMPS DE TRAVAIL 59
         # SI TROP LONG, (30,248)
         liste_de_paires.append((3, (78, 257),""))    # NOMBRE JOUR DE CONGES AUTORISES 60
+        
+        
+        
+        
+        ########### PAGE 3 ##########################################################################################
+        
+        ########### GRATIFICATION ################################################################################
+        
+        
+        liste_de_paires.append((4, (67.35, 39.3),""))    #  GRATIFICATION AU COURS DU STAGE OUI 61
+        liste_de_paires.append((4, (75.35, 39.3),""))    #  GRATIFICATION AU COURS DU STAGE NON 62
+        liste_de_paires.append((4, (100, 45.7),""))    #  MONTANT DE LA GRATIFICATION EN EUROS 63
+        liste_de_paires.append((4, (27.1, 49.1),""))    #  PAR HEURE 64
+        liste_de_paires.append((4, (47, 49.1),""))    #  PAR MOIS 65
+        liste_de_paires.append((4, (61.5, 49.1),""))    #  EN NET 66
+        liste_de_paires.append((4, (73, 49.1),""))    #  EN BRUT 67
+        liste_de_paires.append((4, (85, 56),""))    #  MONTANT DE LA GRATIFICATION EN DEVISE LOCALE 68
+        liste_de_paires.append((4, (81.5, 62.2),""))    #  EN CHEQUE 69
+        liste_de_paires.append((4, (95.1, 62.2),""))    #  VIREMENT BANCAIRE 70
+        liste_de_paires.append((4, (122.1, 62.3),""))    #  ESPECES 71
+        
+        
+        ############# DIVERS ####################################################################################
+        
+        liste_de_paires.append((4, (26, 85),""))    #  REPONSE A UNE OFFRE DE STAGE 72
+        liste_de_paires.append((4, (71, 85),""))    #  CANDIDATURE SPONTANEE 73
+        liste_de_paires.append((4, (108, 85),""))    #  RESEAU DE CONNAISSANCE 74
+        liste_de_paires.append((4, (76.1, 91.1),""))    #  CONFIDENTIALITE DU SUJET OUI 75 
+        liste_de_paires.append((4, (84, 91.1),""))    #  CONFIDENTIALITE DU SUJET NON 76
+        liste_de_paires.append((4, (131, 97.7),""))    #  MODALITE DU SUIVI 77
+        liste_de_paires.append((4, (124, 103),""))    #  LISTE DES AVANTAGES EN NATURE 78
+        liste_de_paires.append((4, (77.1, 110),""))    #  NATURE DU TRAVAIL A FOURNIR MEMOIRE 79
+        liste_de_paires.append((4, (97.2, 110),""))    #  NATURE DU TRAVAIL A FOURNIR RAPPORT DE STAGE 80
+        liste_de_paires.append((4, (67.7, 116.2),""))    #  MODALITE DE VALIDATION STAGE SOUTENANCE 81
+        liste_de_paires.append((4, (87.1, 116.2),""))    #  MODALITE DE VALIDATION STAGE SUIVI STAGE 82
+        liste_de_paires.append((4, (124, 122),""))    #  SI STAGIAIRE DOIT ETRE PRESENT LA NUIT 83
+        liste_de_paires.append((4, (25.2, 132.6),""))    #  LANGUE DE LA CONVENTION FRANCAIS 84
+        liste_de_paires.append((4, (105.2, 132.55),""))    #  LANGUE DE LA CONVENTION ANGLAIS 85 
+        liste_de_paires.append((4, (25.4, 135.7),""))    #  LANGUE DE LA CONVENTION ALLEMAND 86
+        liste_de_paires.append((4, (105.1, 136),""))    #  LANGUE DE LA CONVENTION ESPAGNOL 87
+        
+        
+        
+        
+        ########### ENSEIGNANT REFERENT STAGES ######################################################################
+        
+        liste_de_paires.append((4, (38, 151),""))    #  NOM 88
+        liste_de_paires.append((4, (42, 158),""))    #  PRENOM 89
+        liste_de_paires.append((4, (36, 166),""))    #  TEL 90
+        liste_de_paires.append((4, (93, 1166),""))    #  MAIL 91
+        liste_de_paires.append((4, (70, 171),""))    #  FONCTION DISCIPLINES ENSEIGNEES 92
+        
+        
+        
+        
+        ##########REPRESENTANT LEGAL ETABLISSEMENT ACCUEIL #############################################################
+        
+        liste_de_paires.append((4, (27, 188),""))    #  MONSIEUR 93
+        liste_de_paires.append((4, (39, 188),""))    #  MADAME 94
+        liste_de_paires.append((4, (30, 191),""))    #  NOM PRENOM 95
+        #SI TROP LONG, (30,194)
+        liste_de_paires.append((4, (36, 200),""))    #  tel 96
+        liste_de_paires.append((4, (92, 200),""))    #  MAIL 97
+        liste_de_paires.append((4, (45, 207),""))    #  FONCTION 98
+        liste_de_paires.append((4, (36, 217),""))    #  DATE 99
         
         
         print("ready to write on pdf\n")
@@ -143,8 +208,6 @@ def choisir_fichier():
         fenetre.destroy()  # Détruire la fenêtre principale
         
         
-
-
 
          
 def mm_to_points(mm):
