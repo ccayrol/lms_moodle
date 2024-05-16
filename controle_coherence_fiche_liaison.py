@@ -23,11 +23,11 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
             for ligne in reader :
                 for element in ligne : 
                     cpt += 1 
-                    if cpt >= 97 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
-                        num_page, coordonnees, _ = liste_coordonnees_texte[cpt_liste_coordonnees]
-                        nouvel_element = (num_page,coordonnees,element)
-                        liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
-                        cpt_liste_coordonnees += 1
+                    if cpt >= 93 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
+                        print("cpt et son element : " + str(cpt) + "" + str(element))
+                        cpt,cpt_liste_coordonnees,liste_coordonnees_texte = remplir_case(element, cpt, cpt_liste_coordonnees,liste_coordonnees_texte)
+                        
+                                               
                 
     except FileNotFoundError:
         print("Le fichier spécifié n'a pas été trouvé.")
@@ -35,6 +35,58 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
         print("Une erreur s'est produite :", e)
         
     return liste_coordonnees_texte
+
+
+def case_a_cocher(element, cpt_liste_coordonnees, liste_coordonnees_texte) :
+    if element == '1' :
+        print("element = 1")
+        num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
+        nouvel_element = (num_page,coordonnees,"x")
+        liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
+        cpt_liste_coordonnees += 2
+        print ("cpt_list_coordonnees = "+str(cpt_liste_coordonnees))
+        print("tuple liste_coordonnees : "+ str(liste_coordonnees_texte[cpt_liste_coordonnees]))
+    else : 
+        print("element = 0")
+        cpt_liste_coordonnees += 1
+        num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
+        nouvel_element = (num_page,coordonnees,"x")
+        liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
+        cpt_liste_coordonnees += 1
+    return (cpt_liste_coordonnees, liste_coordonnees_texte)    
+
+def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
+    
+    #stage en rapport avec offre de stage diffuse par univerite : oui ou non
+    if cpt == 110 :
+        print("cpt = 111")
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees)
+    
+    # Tuteur de stage monsieur ou madame
+    elif cpt == 123 :
+        numero = element.split(':')[0].strip()
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero ,cpt_liste_coordonnees,liste_coordonnees)
+            
+    #type de stage
+    elif cpt == 128 :
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees)
+    
+    elif cpt == 129 :
+        return(cpt,cpt_liste_coordonnees,liste_coordonnees)     
+    elif cpt == 130 :
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees)
+    elif cpt == 131 :
+        return(cpt,cpt_liste_coordonnees,liste_coordonnees)
+        
+    else : 
+        num_page, coordonnees, _ = liste_coordonnees[cpt_liste_coordonnees]
+        nouvel_element = (num_page,coordonnees,element)
+        liste_coordonnees[cpt_liste_coordonnees] = nouvel_element
+        cpt_liste_coordonnees += 1
+    return(cpt,cpt_liste_coordonnees,liste_coordonnees)
+
+
+        
         
 def choisir_fichier():
     # Ouvrir une boîte de dialogue pour choisir le fichier CSV
