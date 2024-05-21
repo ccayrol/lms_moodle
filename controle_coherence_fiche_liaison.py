@@ -23,7 +23,7 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
             for ligne in reader :
                 for element in ligne : 
                     cpt += 1 
-                    if cpt >= 93 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
+                    if cpt >= 96 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
                         print("cpt et son element : " + str(cpt) + "" + str(element))
                         cpt,cpt_liste_coordonnees,liste_coordonnees_texte = remplir_case(element, cpt, cpt_liste_coordonnees,liste_coordonnees_texte)
                         
@@ -37,52 +37,128 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
     return liste_coordonnees_texte
 
 
-def case_a_cocher(element, cpt_liste_coordonnees, liste_coordonnees_texte) :
-    if element == '1' :
-        print("element = 1")
-        num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
-        nouvel_element = (num_page,coordonnees,"x")
-        liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
-        cpt_liste_coordonnees += 2
-        print ("cpt_list_coordonnees = "+str(cpt_liste_coordonnees))
-        print("tuple liste_coordonnees : "+ str(liste_coordonnees_texte[cpt_liste_coordonnees]))
+def case_a_cocher(element, cpt_liste_coordonnees, liste_coordonnees_texte, numeric) :
+    
+# Quand finctionne par string
+    if (numeric) :
+        if element == '0' :
+            return (cpt_liste_coordonnees+1, liste_coordonnees_texte)
+        else : 
+            num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
+            nouvel_element = (num_page,coordonnees,"x")
+            liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
+            cpt_liste_coordonnees += 1
+    
     else : 
-        print("element = 0")
-        cpt_liste_coordonnees += 1
-        num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
-        nouvel_element = (num_page,coordonnees,"x")
-        liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
-        cpt_liste_coordonnees += 1
+        if element == '1' :
+            print("element = 1")
+            num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
+            nouvel_element = (num_page,coordonnees,"x")
+            liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
+            cpt_liste_coordonnees += 2
+            print ("cpt_list_coordonnees = "+str(cpt_liste_coordonnees))
+            print("tuple liste_coordonnees : "+ str(liste_coordonnees_texte[cpt_liste_coordonnees]))
+        elif element == '2' :
+            print("element = 2") 
+            cpt_liste_coordonnees += 1
+            num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
+            nouvel_element = (num_page,coordonnees,"x")
+            liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
+            cpt_liste_coordonnees += 1
+        elif element == '3' :
+            print("element = 3")
+            cpt_liste_coordonnees += 2
+            num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
+            nouvel_element = (num_page,coordonnees,"x")
+            liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
+            cpt_liste_coordonnees += 1 
+                
+        else :
+            print ("element = 4")
+            cpt_liste_coordonnees += 3
+            num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
+            nouvel_element = (num_page,coordonnees,"x")
+            liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
+            cpt_liste_coordonnees += 1   
+          
     return (cpt_liste_coordonnees, liste_coordonnees_texte)    
 
 def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
     
+    numeric = False
     #stage en rapport avec offre de stage diffuse par univerite : oui ou non
-    if cpt == 110 :
+    if cpt == 113 :
         print("cpt = 111")
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees,numeric)
     
     # Tuteur de stage monsieur ou madame
-    elif cpt == 123 :
+    elif cpt == 126 :
         numero = element.split(':')[0].strip()
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero ,cpt_liste_coordonnees,liste_coordonnees)
+        print("element numero:"+str(numero))
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero ,cpt_liste_coordonnees,liste_coordonnees, numeric)
             
     #type de stage
-    elif cpt == 128 :
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees)
-    
-    elif cpt == 129 :
-        return(cpt,cpt_liste_coordonnees,liste_coordonnees)     
-    elif cpt == 130 :
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees)
     elif cpt == 131 :
-        return(cpt,cpt_liste_coordonnees,liste_coordonnees)
+        numeric = True
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric)
+    elif cpt == 132 :
+        numeric = True
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees , numeric)     
+    elif cpt == 133 :
+        numeric = True
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric)
+    elif cpt == 134 :
+        numeric = True
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric)
+    
+    
+    elif cpt == 143 :   #Interruption au cours du stage
+        numero = element.split(':')[0].strip()
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+    elif cpt == 148 : 
+        numero = element.split(':')[0].strip()
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+    elif cpt == 152 : 
+        numero = element.split(':')[0].strip()
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        
+        
+    elif cpt in (154,155,156,157) : # MONTANT GRATIFICATION par heure/mois brut/net
+        numeric = True
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric)
+      
+    elif cpt in (159,160) : # modalite versement/stage trouve/confidentialite stage
+        numero = element.split(':')[0].strip()
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        if numero in('1', '2') :
+            cpt_liste_coordonnees += 1
+            
+    elif cpt == 161 : 
+        numero = element.split(':')[0].strip()
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+            
+    elif cpt in (164,165) :
+        numero = element.split(':')[0].strip()
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+   
+    elif cpt == 167 :
+        numero = element.split(':')[0].strip()
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        if numero in ('1','2') :
+            cpt_liste_coordonnees += 2
+        if numero == '3' :
+            cpt_liste_coordonnees += 1
+            
+    elif cpt == 168 :
+        numero = element.split(':')[0].strip()
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
         
     else : 
         num_page, coordonnees, _ = liste_coordonnees[cpt_liste_coordonnees]
         nouvel_element = (num_page,coordonnees,element)
         liste_coordonnees[cpt_liste_coordonnees] = nouvel_element
         cpt_liste_coordonnees += 1
+        
     return(cpt,cpt_liste_coordonnees,liste_coordonnees)
 
 
@@ -129,8 +205,8 @@ def choisir_fichier():
         liste_de_paires.append((3, (82, 53),""))    # RAISON SOCIALE ENTREPRISE 21
         liste_de_paires.append((3, (68, 58),""))    # CODE APE 22
         liste_de_paires.append((3, (103, 58),""))   # EFFECTIF 23
-        liste_de_paires.append((3, (63, 63),""))    # ACTIVITE DE L ETABLISSEMENT 24
-        liste_de_paires.append((3, (81, 68),""))    # TYPE D ETABLISSEMENT 25
+        liste_de_paires.append((3, (63, 61.9),""))    # ACTIVITE DE L ETABLISSEMENT 24
+        liste_de_paires.append((3, (81, 66.9),""))    # TYPE D ETABLISSEMENT 25
         liste_de_paires.append((3, (77, 72),""))    # ADRESSE ETABLISSEMENT 26
         liste_de_paires.append((3, (47, 77),""))    # CODE POSTAL 27
         liste_de_paires.append((3, (95, 77),""))    # COMMUNE 28
@@ -181,7 +257,7 @@ def choisir_fichier():
         liste_de_paires.append((3, (50.5, 228),""))    # TEMPS DE TRAVAIL = TEMPS PLEINS 56
         liste_de_paires.append((3, (69.4, 228),""))    # TEMPS DE TRAVAIL = TEMPS PARTIEL 57
         liste_de_paires.append((3, (73, 234),""))    # NOMBRE D HEURE HEBDOMADAIRE 58
-        liste_de_paires.append((3, (78, 244),""))    # COMMENTAIRE SUR LE TEMPS DE TRAVAIL 59
+        liste_de_paires.append((3, (78, 243),""))    # COMMENTAIRE SUR LE TEMPS DE TRAVAIL 59
         # SI TROP LONG, (30,248)
         liste_de_paires.append((3, (78, 257),""))    # NOMBRE JOUR DE CONGES AUTORISES 60
         
@@ -195,7 +271,7 @@ def choisir_fichier():
         
         liste_de_paires.append((4, (67.35, 39.3),""))    #  GRATIFICATION AU COURS DU STAGE OUI 61
         liste_de_paires.append((4, (75.35, 39.3),""))    #  GRATIFICATION AU COURS DU STAGE NON 62
-        liste_de_paires.append((4, (100, 45.7),""))    #  MONTANT DE LA GRATIFICATION EN EUROS 63
+        liste_de_paires.append((4, (100, 45.3),""))    #  MONTANT DE LA GRATIFICATION EN EUROS 63
         liste_de_paires.append((4, (27.1, 49.1),""))    #  PAR HEURE 64
         liste_de_paires.append((4, (47, 49.1),""))    #  PAR MOIS 65
         liste_de_paires.append((4, (61.5, 49.1),""))    #  EN NET 66
@@ -213,7 +289,7 @@ def choisir_fichier():
         liste_de_paires.append((4, (108, 85),""))    #  RESEAU DE CONNAISSANCE 74
         liste_de_paires.append((4, (76.1, 91.1),""))    #  CONFIDENTIALITE DU SUJET OUI 75 
         liste_de_paires.append((4, (84, 91.1),""))    #  CONFIDENTIALITE DU SUJET NON 76
-        liste_de_paires.append((4, (131, 97.7),""))    #  MODALITE DU SUIVI 77
+        liste_de_paires.append((4, (131, 96.4),""))    #  MODALITE DU SUIVI 77
         liste_de_paires.append((4, (124, 103),""))    #  LISTE DES AVANTAGES EN NATURE 78
         liste_de_paires.append((4, (77.1, 110),""))    #  NATURE DU TRAVAIL A FOURNIR MEMOIRE 79
         liste_de_paires.append((4, (97.2, 110),""))    #  NATURE DU TRAVAIL A FOURNIR RAPPORT DE STAGE 80
@@ -226,24 +302,24 @@ def choisir_fichier():
         liste_de_paires.append((4, (105.1, 136),""))    #  LANGUE DE LA CONVENTION ESPAGNOL 87
         
         
-        
+     
         
         ########### ENSEIGNANT REFERENT STAGES ######################################################################
         
-        liste_de_paires.append((4, (38, 151),""))    #  NOM 88
-        liste_de_paires.append((4, (42, 158),""))    #  PRENOM 89
-        liste_de_paires.append((4, (36, 166),""))    #  TEL 90
-        liste_de_paires.append((4, (93, 1166),""))    #  MAIL 91
-        liste_de_paires.append((4, (70, 171),""))    #  FONCTION DISCIPLINES ENSEIGNEES 92
+    #    liste_de_paires.append((4, (38, 151),""))    #  NOM 88
+    #    liste_de_paires.append((4, (42, 158),""))    #  PRENOM 89
+    #    liste_de_paires.append((4, (36, 166),""))    #  TEL 90
+    #    liste_de_paires.append((4, (93, 1166),""))    #  MAIL 91
+    #    liste_de_paires.append((4, (70, 171),""))    #  FONCTION DISCIPLINES ENSEIGNEES 92
         
-        
+          
         
         
         ##########REPRESENTANT LEGAL ETABLISSEMENT ACCUEIL #############################################################
         
-        liste_de_paires.append((4, (27, 188),""))    #  MONSIEUR 93
-        liste_de_paires.append((4, (39, 188),""))    #  MADAME 94
-        liste_de_paires.append((4, (30, 191),""))    #  NOM PRENOM 95
+        liste_de_paires.append((4, (28, 187),""))    #  MONSIEUR 93
+        liste_de_paires.append((4, (40, 187),""))    #  MADAME 94
+        liste_de_paires.append((4, (30, 190),""))    #  NOM PRENOM 95
         #SI TROP LONG, (30,194)
         liste_de_paires.append((4, (36, 200),""))    #  tel 96
         liste_de_paires.append((4, (92, 200),""))    #  MAIL 97
