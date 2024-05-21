@@ -389,8 +389,8 @@ def choisir_fichier():
         liste_de_paires.append((4, (87.1, 116.2),""))    #  MODALITE DE VALIDATION STAGE SUIVI STAGE 82
         liste_de_paires.append((4, (124, 122),""))    #  SI STAGIAIRE DOIT ETRE PRESENT LA NUIT 83
         liste_de_paires.append((4, (25.2, 132.6),""))    #  LANGUE DE LA CONVENTION FRANCAIS 84
-        liste_de_paires.append((4, (105.2, 132.55),""))    #  LANGUE DE LA CONVENTION ANGLAIS 85 
         liste_de_paires.append((4, (25.4, 135.7),""))    #  LANGUE DE LA CONVENTION ALLEMAND 86
+        liste_de_paires.append((4, (105.2, 132.55),""))    #  LANGUE DE LA CONVENTION ANGLAIS 85 
         liste_de_paires.append((4, (105.1, 136),""))    #  LANGUE DE LA CONVENTION ESPAGNOL 87
         
         
