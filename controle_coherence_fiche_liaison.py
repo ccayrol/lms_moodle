@@ -37,17 +37,30 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
     return liste_coordonnees_texte
 
 
-def case_a_cocher(element, cpt_liste_coordonnees, liste_coordonnees_texte, numeric) :
+def case_a_cocher(element, cpt_liste_coordonnees, liste_coordonnees_texte, numeric, cpt) :
     
-# Quand finctionne par string
+# Quand finctionne pas par string
     if (numeric) :
-        if element == '0' :
-            return (cpt_liste_coordonnees+1, liste_coordonnees_texte)
+        if cpt == 113 : 
+            if element == '0' :
+                cpt_liste_coordonnees += 1
+                num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
+                nouvel_element = (num_page,coordonnees,"x")
+                liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
+                cpt_liste_coordonnees += 1
+            else : 
+                num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
+                nouvel_element = (num_page,coordonnees,"x")
+                liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
+                cpt_liste_coordonnees += 1
         else : 
-            num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
-            nouvel_element = (num_page,coordonnees,"x")
-            liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
-            cpt_liste_coordonnees += 1
+            if element == '0' :
+                return (cpt_liste_coordonnees+1, liste_coordonnees_texte)
+            else : 
+                num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
+                nouvel_element = (num_page,coordonnees,"x")
+                liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
+                cpt_liste_coordonnees += 1
     
     else : 
         if element == '1' :
@@ -88,62 +101,63 @@ def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
     numeric = False
     #stage en rapport avec offre de stage diffuse par univerite : oui ou non
     if cpt == 113 :
-        print("cpt = 111")
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees,numeric)
-    
+        numeric = True
+        print("cpt = 113")
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees,numeric, cpt)
+        
     # Tuteur de stage monsieur ou madame
     elif cpt == 126 :
         numero = element.split(':')[0].strip()
         print("element numero:"+str(numero))
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero ,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero ,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
             
     #type de stage
     elif cpt == 131 :
         numeric = True
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
     elif cpt == 132 :
         numeric = True
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees , numeric)     
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees , numeric, cpt)     
     elif cpt == 133 :
         numeric = True
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
     elif cpt == 134 :
         numeric = True
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
     
     
     elif cpt == 143 :   #Interruption au cours du stage
         numero = element.split(':')[0].strip()
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
     elif cpt == 148 : 
         numero = element.split(':')[0].strip()
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
     elif cpt == 152 : 
         numero = element.split(':')[0].strip()
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
         
         
     elif cpt in (154,155,156,157) : # MONTANT GRATIFICATION par heure/mois brut/net
         numeric = True
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
       
     elif cpt in (159,160) : # modalite versement/stage trouve/confidentialite stage
         numero = element.split(':')[0].strip()
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
         if numero in('1', '2') :
             cpt_liste_coordonnees += 1
             
     elif cpt == 161 : 
         numero = element.split(':')[0].strip()
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
             
     elif cpt in (164,165) :
         numero = element.split(':')[0].strip()
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
    
     elif cpt == 167 :
         numero = element.split(':')[0].strip()
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
         if numero in ('1','2') :
             cpt_liste_coordonnees += 2
         if numero == '3' :
@@ -151,7 +165,7 @@ def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
             
     elif cpt == 168 :
         numero = element.split(':')[0].strip()
-        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric)
+        cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
         
     else : 
         num_page, coordonnees, _ = liste_coordonnees[cpt_liste_coordonnees]
@@ -166,11 +180,11 @@ def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
         
 def choisir_fichier():
     # Ouvrir une boîte de dialogue pour choisir le fichier CSV
-    chemin_fichier = filedialog.askopenfilename(filetypes=[("Fichiers CSV", "*.csv")])
+    fichier_csv = filedialog.askopenfilename(filetypes=[("Fichiers CSV", "*.csv")])
     
     # Si un fichier a été sélectionné, lire son contenu
-    if chemin_fichier:
-        repertoire_fichier = os.path.dirname(chemin_fichier)
+    if fichier_csv:
+        repertoire_fichier = os.path.dirname(fichier_csv)
         print("repertoire fichier = "+repertoire_fichier)
         output_fichier = repertoire_fichier +"\\output.pdf"
         liste_de_paires = [] 
@@ -329,7 +343,7 @@ def choisir_fichier():
         
         print("ready to write on pdf\n")
 
-        write_data_to_pdf('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', output_fichier, chemin_fichier, liste_de_paires)
+        write_data_to_pdf('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', output_fichier, fichier_csv, liste_de_paires)
 
         print( "traitement terminé")
         fenetre.quit()  # Quitter la boucle principale de l'interface graphique
