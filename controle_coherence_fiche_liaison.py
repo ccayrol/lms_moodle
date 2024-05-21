@@ -37,6 +37,67 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
     return liste_coordonnees_texte
 
 
+def remplir_plusieurs_ligne_a_partir_un_string(element,cpt_liste_coordonnees,liste_coordonnees, cpt) :
+    
+    taille_element = len(element)
+    print("taille de mon element : "+ str(taille_element))
+    taille_max_premiere_ligne = 0
+    taille_max_deuxieme_ligne = 0
+    premiere_partie = ""
+    deuxieme_partie = ""
+    troisieme_partie = ""
+    
+    if cpt == 137 :
+        taille_max_premiere_ligne = 80
+    elif cpt == 138 :
+        taille_max_premiere_ligne = 40 
+    elif cpt == 139 :
+        taille_max_premiere_ligne = 30
+        taille_max_deuxieme_ligne = 90
+    elif cpt == 140 :
+        taille_max_premiere_ligne = 45
+        taille_max_deuxieme_ligne = 90
+    elif cpt == 150 :
+        taille_max_premiere_ligne = 80
+    
+    if taille_element > taille_max_premiere_ligne :
+        premiere_partie = element[:taille_max_premiere_ligne]
+        if (taille_element > taille_max_premiere_ligne + taille_max_deuxieme_ligne) :
+            deuxieme_partie = element[taille_max_premiere_ligne:taille_max_premiere_ligne+taille_max_deuxieme_ligne]
+            troisieme_partie = element[taille_max_deuxieme_ligne+taille_max_premiere_ligne:]
+        else :
+            deuxieme_partie = element[taille_max_premiere_ligne:]
+        
+        
+        num_page, coordonnees, _ = liste_coordonnees[cpt_liste_coordonnees]
+        nouvel_element = (num_page,coordonnees,premiere_partie)
+        liste_coordonnees[cpt_liste_coordonnees] = nouvel_element
+        cpt_liste_coordonnees += 1
+        num_page, coordonnees, _ = liste_coordonnees[cpt_liste_coordonnees]
+        nouvel_element = (num_page,coordonnees,deuxieme_partie)
+        liste_coordonnees[cpt_liste_coordonnees] = nouvel_element
+        cpt_liste_coordonnees += 1
+        if taille_max_deuxieme_ligne > 0 :
+            if troisieme_partie != "" :
+                num_page, coordonnees, _ = liste_coordonnees[cpt_liste_coordonnees]
+                nouvel_element = (num_page,coordonnees,troisieme_partie)
+                liste_coordonnees[cpt_liste_coordonnees] = nouvel_element
+            cpt_liste_coordonnees += 1
+            
+    else :
+        num_page, coordonnees, _ = liste_coordonnees[cpt_liste_coordonnees]
+        nouvel_element = (num_page,coordonnees,element)
+        liste_coordonnees[cpt_liste_coordonnees] = nouvel_element
+        if taille_max_deuxieme_ligne != 0 :
+            cpt_liste_coordonnees + 3
+        else :
+            cpt_liste_coordonnees += 2
+    
+    return (cpt_liste_coordonnees, liste_coordonnees)   
+    
+             
+
+
 def case_a_cocher(element, cpt_liste_coordonnees, liste_coordonnees_texte, numeric, cpt) :
     
 # Quand finctionne pas par string
@@ -129,6 +190,16 @@ def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
     elif cpt == 143 :   #Interruption au cours du stage
         numero = element.split(':')[0].strip()
         cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
+    
+    
+    # GESTION TEXTE SUR PLUSIEURS LIGNES
+    elif cpt in (137,138,139,140,150) : 
+        print ("taille chaine de caractere = "+str(len(element)))
+        cpt_liste_coordonnees,liste_coordonnees = remplir_plusieurs_ligne_a_partir_un_string(element,cpt_liste_coordonnees,liste_coordonnees, cpt)
+    
+    
+    
+    
     elif cpt == 148 : 
         numero = element.split(':')[0].strip()
         cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
@@ -248,12 +319,18 @@ def choisir_fichier():
         liste_de_paires.append((3, (61, 141),""))    # CODE UE 42
         liste_de_paires.append((3, (125, 141),""))    # NOMBRE ECTS 43
         liste_de_paires.append((3, (58, 148),""))    # THEMATIQUE DU STAGE 44
-        # SI THEMATIQUE TROP LONG CHANGER DE LIGNE ET PASSER A (30,152)
+        liste_de_paires.append((3, (27.5, 150.8),""))   # SI THEMATIQUE TROP LONG CHANGER DE LIGNE ET PASSER A (30,152)
+        
         liste_de_paires.append((3, (113, 154.5),""))    # SUJET DE STAGE  45
-        # SI SUJET TROP LONG CHANGER DE LIGNE ET PASSER A (30,159)
+        liste_de_paires.append((3, (28, 157.5),"")) # SI SUJET TROP LONG CHANGER DE LIGNE ET PASSER A (30,159)
+        
         liste_de_paires.append((3, (133, 160.5),""))    # FONCTION ET TACHES CONFIEES AU STAGIAIRE 46
+        liste_de_paires.append((3, (28, 164),""))
+        liste_de_paires.append((3, (28, 168),""))
         # SI TROP LONG PASSER A (30,165), PUIS (30,168)
         liste_de_paires.append((3, (103, 170),""))  # COMETENCES A ACQUERIR PENDANT STAGE 47
+        liste_de_paires.append((3, (28, 174),""))
+        liste_de_paires.append((3, (28, 178),""))
         # SI TROP LONG, (30,174) PUIS (30, 178)
         
         
@@ -272,6 +349,7 @@ def choisir_fichier():
         liste_de_paires.append((3, (69.4, 228),""))    # TEMPS DE TRAVAIL = TEMPS PARTIEL 57
         liste_de_paires.append((3, (73, 234),""))    # NOMBRE D HEURE HEBDOMADAIRE 58
         liste_de_paires.append((3, (78, 243),""))    # COMMENTAIRE SUR LE TEMPS DE TRAVAIL 59
+        liste_de_paires.append((3, (28, 248),""))
         # SI TROP LONG, (30,248)
         liste_de_paires.append((3, (78, 257),""))    # NOMBRE JOUR DE CONGES AUTORISES 60
         
