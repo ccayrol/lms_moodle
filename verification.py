@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 
 class Verification:
@@ -44,7 +44,7 @@ class Verification:
 
     @staticmethod
     def verify_date_validite(date_validite):
-        return datetime.datetime.now().strftime("%Y-%m-%d") < date_validite
+        return datetime.date.today() < datetime.datetime.strptime(date_validite, '%Y-%m-%d').date()
 
     @staticmethod
     def verify_siren_ou_siret(siren_ou_siret):
