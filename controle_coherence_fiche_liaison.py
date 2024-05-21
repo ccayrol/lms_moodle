@@ -62,7 +62,7 @@ def remplir_plusieurs_ligne_a_partir_un_string(element,cpt_liste_coordonnees,lis
     
     if taille_element > taille_max_premiere_ligne :
         premiere_partie = element[:taille_max_premiere_ligne]
-        if (taille_element > taille_max_premiere_ligne + taille_max_deuxieme_ligne) :
+        if (taille_element > taille_max_premiere_ligne + taille_max_deuxieme_ligne and taille_max_deuxieme_ligne != 0) :
             deuxieme_partie = element[taille_max_premiere_ligne:taille_max_premiere_ligne+taille_max_deuxieme_ligne]
             troisieme_partie = element[taille_max_deuxieme_ligne+taille_max_premiere_ligne:]
         else :
