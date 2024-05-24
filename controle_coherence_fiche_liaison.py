@@ -15,12 +15,18 @@ from traitementAlternance import remplir_fichier_excel
 def simplification_fichier_csv(fichier_csv) : 
     return
 
-def controle_coherence(fichier_csv, liste_coordonnees_texte) :
+def controle_coherence(input_pdf, output_pdf, fichier_csv, liste_coordonnees_texte) :
     try : 
+        
         cpt = 0
         cpt_liste_coordonnees = 0 
+        numero_ligne = 0
         nom_etudiant = ""
         prenom_etudiant = ""
+        chemin_fichier = output_pdf
+        output_pdf = ""
+        
+        #############################   LECTURE DU FICHIER CSV   ####################################################
         with open(fichier_csv,'r') as file :
             reader = csv.reader(file, delimiter=',')
             for ligne in reader :
@@ -33,8 +39,21 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
                         elif cpt == 98 :
                             prenom_etudiant = element
                         cpt_liste_coordonnees,liste_coordonnees_texte = remplir_case(element, cpt, cpt_liste_coordonnees,liste_coordonnees_texte)
-                        
-                                               
+                if numero_ligne >= 1 :
+                    today = datetime.date.today()
+                    formatted_today = today.strftime("%Y%m%d")
+                    output_pdf += chemin_fichier + "//"+ str(formatted_today) + "_" + nom_etudiant + "_" + prenom_etudiant + "_FL_L3" + ".pdf"
+                    write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte)
+                    
+                    # RE INITIALISATION DE TOUTE LES VARIABLE POUR COMMENCER A REMPLIR UN NOUVEAU PDF
+                    for i, (num, coords, champ) in enumerate(liste_coordonnees_texte):  
+                        if isinstance(champ, str):
+                            liste_coordonnees_texte[i] = (num, coords, "")
+                    output_pdf = ""
+                    cpt_liste_coordonnees = 0
+                       # 10 de moins de là on commence a recupere les donnees --> 10 metadonnees que l'on ne veut pas recuperer en debut de ligne
+                cpt = 86
+                numero_ligne += 1                               
                 
     except FileNotFoundError:
         print("Le fichier spécifié n'a pas été trouvé.")
@@ -120,7 +139,7 @@ def case_a_cocher(element, cpt_liste_coordonnees, liste_coordonnees_texte, numer
                 num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
                 nouvel_element = (num_page,coordonnees,"x")
                 liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
-                cpt_liste_coordonnees += 1
+                cpt_liste_coordonnees += 2
         else : 
             if element == '0' :
                 return (cpt_liste_coordonnees+1, liste_coordonnees_texte)
@@ -428,7 +447,7 @@ def choisir_fichier():
         
         print("ready to write on pdf\n")
 
-        write_data_to_pdf('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', output_fichier, fichier_csv, liste_de_paires)
+        controle_coherence('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', output_fichier, fichier_csv, liste_de_paires, )
 
         print( "traitement terminé")
         fenetre.quit()  # Quitter la boucle principale de l'interface graphique
@@ -442,11 +461,7 @@ def mm_to_points(mm):
     return mm * 2.83465
 
 
-def write_data_to_pdf(input_pdf, output_pdf, chemin_fichier, liste_coordonnees_texte):
-    liste_coordonnees_texte, nom_etudiant, prenom_etudiant = controle_coherence(chemin_fichier, liste_coordonnees_texte)
-    today = datetime.date.today()
-    formatted_today = today.strftime("%Y%m%d")
-    output_pdf += "//"+ str(formatted_today) + "_" + nom_etudiant + "_" + prenom_etudiant + "_FL_L3" + ".pdf"
+def write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte):
     try :
         with open(input_pdf, 'rb') as file :
 
