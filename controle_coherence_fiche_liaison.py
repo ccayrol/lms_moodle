@@ -9,6 +9,7 @@ from tkinter import filedialog
 import io
 import os
 from traitementAlternance import remplir_fichier_excel
+import multiprocessing
 
 
 
@@ -30,7 +31,7 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
                 for element in ligne : 
                     cpt += 1 
                     if cpt >= 96 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
-                        print("cpt et son element : " + str(cpt) + "" + str(element))
+                       # print("cpt et son element : " + str(cpt) + "" + str(element))
                         if cpt == 97 :
                             nom_etudiant = element
                         elif cpt == 98 :
@@ -40,6 +41,7 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
                     today = datetime.date.today()
                     formatted_today = today.strftime("%Y%m%d")
                     output_pdf += chemin_fichier + "//"+ str(formatted_today) + "_" + nom_etudiant + "_" + prenom_etudiant + "_FL_L3" + ".pdf"
+                    print("Le fichier "+ output_pdf + " est en cours d'ecriture...")
                     write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte)
                     
                     # RE INITIALISATION DE TOUTE LES VARIABLE POUR COMMENCER A REMPLIR UN NOUVEAU PDF
@@ -63,7 +65,6 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
 def remplir_plusieurs_ligne_a_partir_un_string(element,cpt_liste_coordonnees,liste_coordonnees, cpt) :
     
     taille_element = len(element)
-    print("taille de mon element : "+ str(taille_element))
     taille_max_premiere_ligne = 0
     taille_max_deuxieme_ligne = 0
     premiere_partie = ""
@@ -148,22 +149,19 @@ def case_a_cocher(element, cpt_liste_coordonnees, liste_coordonnees_texte, numer
     
     else : 
         if element == '1' :
-            print("element = 1")
             num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
             nouvel_element = (num_page,coordonnees,"x")
             liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
             cpt_liste_coordonnees += 2
-            print ("cpt_list_coordonnees = "+str(cpt_liste_coordonnees))
-            print("tuple liste_coordonnees : "+ str(liste_coordonnees_texte[cpt_liste_coordonnees]))
+            
         elif element == '2' :
-            print("element = 2") 
             cpt_liste_coordonnees += 1
             num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
             nouvel_element = (num_page,coordonnees,"x")
             liste_coordonnees_texte[cpt_liste_coordonnees] = nouvel_element
             cpt_liste_coordonnees += 1
+            
         elif element == '3' :
-            print("element = 3")
             cpt_liste_coordonnees += 2
             num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
             nouvel_element = (num_page,coordonnees,"x")
@@ -171,7 +169,6 @@ def case_a_cocher(element, cpt_liste_coordonnees, liste_coordonnees_texte, numer
             cpt_liste_coordonnees += 1 
                 
         else :
-            print ("element = 4")
             cpt_liste_coordonnees += 3
             num_page, coordonnees,_ = liste_coordonnees_texte[cpt_liste_coordonnees]
             nouvel_element = (num_page,coordonnees,"x")
@@ -186,13 +183,11 @@ def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
     #stage en rapport avec offre de stage diffuse par univerite : oui ou non
     if cpt == 113 :
         numeric = True
-        print("cpt = 113")
         cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees,numeric, cpt)
         
     # Tuteur de stage monsieur ou madame
     elif cpt == 126 :
         numero = element.split(':')[0].strip()
-        print("element numero:"+str(numero))
         cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(numero ,cpt_liste_coordonnees,liste_coordonnees, numeric, cpt)
             
     #type de stage
@@ -217,7 +212,6 @@ def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
     
     # GESTION TEXTE SUR PLUSIEURS LIGNES
     elif cpt in (137,138,139,140,150) : 
-        print ("taille chaine de caractere = "+str(len(element)))
         cpt_liste_coordonnees,liste_coordonnees = remplir_plusieurs_ligne_a_partir_un_string(element,cpt_liste_coordonnees,liste_coordonnees, cpt)
     
     
@@ -482,8 +476,12 @@ def write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte):
             # Enregistrement du fichier PDF de sortie
             with open(output_pdf, 'wb') as output_file:
                 writer.write(output_file)
+            
+            print("le fichier " + output_pdf + " a ete généré avec succés")
+            
                 
            # subprocess.Popen(['start', '', output_pdf], shell=True)
+           
                     
     except Exception as e:
         print("Une erreur est survenue lors de l'ajout de données au PDF :", e)
