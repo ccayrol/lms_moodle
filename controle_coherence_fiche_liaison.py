@@ -78,10 +78,10 @@ def remplir_plusieurs_ligne_a_partir_un_string(element,cpt_liste_coordonnees,lis
         taille_max_premiere_ligne = 40 
     elif cpt == 139 :
         taille_max_premiere_ligne = 30
-        taille_max_deuxieme_ligne = 90
+        taille_max_deuxieme_ligne = 105
     elif cpt == 140 :
         taille_max_premiere_ligne = 45
-        taille_max_deuxieme_ligne = 90
+        taille_max_deuxieme_ligne = 105
     elif cpt == 150 :
         taille_max_premiere_ligne = 80
     
@@ -279,13 +279,14 @@ def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
         
 def choisir_fichier():
     # Ouvrir une boîte de dialogue pour choisir le fichier CSV
-    fichier_csv = filedialog.askopenfilename(filetypes=[("Fichiers CSV", "*.csv")])
+    fichier_csv = filedialog.askopenfilename(title = "Choisir le fichier CSV contenant les informations des étudiants",filetypes=[("Fichiers CSV", "*.csv")])
+    input_pdf = filedialog.askopenfilename(title="Choisir la fiche de liaison L1/L2/L3 vierge", filetypes=[("PDF files", "*.pdf")])
     
     # Si un fichier a été sélectionné, lire son contenu
     if fichier_csv:
         repertoire_fichier = os.path.dirname(fichier_csv)
         print("repertoire fichier = "+repertoire_fichier)
-        output_fichier = repertoire_fichier 
+        output_pdf = repertoire_fichier 
         liste_de_paires = [] 
         start_time = time.time()
         
@@ -450,7 +451,7 @@ def choisir_fichier():
         
         print("ready to write on pdf\n")
 
-        controle_coherence_ecriture_sur_pdf('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', output_fichier, fichier_csv, liste_de_paires, )
+        controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_de_paires, )
 
         print( "traitement terminé")
         end_time = time.time()
@@ -524,11 +525,11 @@ if __name__ == "__main__":
         fenetre = tk.Tk()
         fenetre.title("Lire un fichier CSV")
 
-        # Créer un bouton pour choisir le fichier CSV
-        bouton_choisir = tk.Button(fenetre, text="Choisir un fichier CSV", command=choisir_fichier)
-        bouton_choisir.pack(pady=10)
+    # Créer un bouton pour choisir le fichier CSV
+    bouton_choisir_1 = tk.Button(fenetre, text="Choisir les fichiers CSV et PDF", command=choisir_fichier)
+    bouton_choisir_1.pack(pady=10)
 
-        # Lancer la boucle principale de l'interface graphique
-        fenetre.mainloop()
+    # Lancer la boucle principale de l'interface graphique
+    fenetre.mainloop()
  
 
