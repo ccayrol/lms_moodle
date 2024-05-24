@@ -12,10 +12,7 @@ from traitementAlternance import remplir_fichier_excel
 
 
 
-def simplification_fichier_csv(fichier_csv) : 
-    return
-
-def controle_coherence(input_pdf, output_pdf, fichier_csv, liste_coordonnees_texte) :
+def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_coordonnees_texte) :
     try : 
         
         cpt = 0
@@ -447,7 +444,7 @@ def choisir_fichier():
         
         print("ready to write on pdf\n")
 
-        controle_coherence('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', output_fichier, fichier_csv, liste_de_paires, )
+        controle_coherence_ecriture_sur_pdf('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', output_fichier, fichier_csv, liste_de_paires, )
 
         print( "traitement terminé")
         fenetre.quit()  # Quitter la boucle principale de l'interface graphique
