@@ -1,6 +1,7 @@
 import datetime
-import dask.dataframe as dd
 import re
+
+import dask.dataframe as dd
 
 
 class Verification:
@@ -61,24 +62,30 @@ class Verification:
 
     @staticmethod
     def verify_format_montant_gratification(montant_gratification):
-        return (len(montant_gratification) == 6
-                and montant_gratification[3] == "."
-                and montant_gratification[:3].isdigit()
-                and montant_gratification[4:].isdigit())
-    @staticmethod     
+        return ((len(montant_gratification) == 6
+                 and montant_gratification[3] == "."
+                 and montant_gratification[:3].isdigit()
+                 and montant_gratification[4:].isdigit())
+                or
+                (len(montant_gratification) == 7
+                 and montant_gratification[4] == "."
+                 and montant_gratification[:4].isdigit()
+                 and montant_gratification[5:].isdigit()))
+
+    @staticmethod
     def verify_siren_ou_siret(Siren_Siret):
         # Chemin vers le fichier CSV contenant tous les informations des entreprises
         fichier_csv = 'StockEtablissement_utf8.csv'
-        
+
         if len(Siren_Siret) == 9:
             column_name = "siren"
         elif len(Siren_Siret) == 14:
             column_name = "siret"
         else:
             return False
-        
+
         # Charger le fichier CSV en utilisant Dask en spécifiant les types de données
-        ddf = dd.read_csv(fichier_csv, dtype={column_name : str}, low_memory=False, usecols=[column_name])
+        ddf = dd.read_csv(fichier_csv, dtype={column_name: str}, low_memory=False, usecols=[column_name])
 
         ligne_siren_recherche = ddf[ddf[column_name] == Siren_Siret]
 
@@ -86,4 +93,3 @@ class Verification:
             return True
         else:
             return False
-
