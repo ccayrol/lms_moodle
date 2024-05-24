@@ -10,6 +10,7 @@ import io
 import os
 from traitementAlternance import remplir_fichier_excel
 import multiprocessing
+import time
 
 
 
@@ -31,7 +32,7 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
                 for element in ligne : 
                     cpt += 1 
                     if cpt >= 96 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
-                       # print("cpt et son element : " + str(cpt) + "" + str(element))
+                        #print("cpt et son element : " + str(cpt) + "" + str(element))
                         if cpt == 97 :
                             nom_etudiant = element
                         elif cpt == 98 :
@@ -180,8 +181,18 @@ def case_a_cocher(element, cpt_liste_coordonnees, liste_coordonnees_texte, numer
 def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
     
     numeric = False
+    
+    if cpt in (99,100,105, 123) :
+        diviser_element = element.split(":")
+        element = diviser_element[1].strip()
+        num_page, coordonnees, _ = liste_coordonnees[cpt_liste_coordonnees]
+        nouvel_element = (num_page,coordonnees,element)
+        liste_coordonnees[cpt_liste_coordonnees] = nouvel_element
+        cpt_liste_coordonnees += 1
+    
+    
     #stage en rapport avec offre de stage diffuse par univerite : oui ou non
-    if cpt == 113 :
+    elif cpt == 113 :
         numeric = True
         cpt_liste_coordonnees,liste_coordonnees = case_a_cocher(element,cpt_liste_coordonnees,liste_coordonnees,numeric, cpt)
         
@@ -276,6 +287,7 @@ def choisir_fichier():
         print("repertoire fichier = "+repertoire_fichier)
         output_fichier = repertoire_fichier 
         liste_de_paires = [] 
+        start_time = time.time()
         
         ########## PAGE 1 #######################################################
         
@@ -441,6 +453,9 @@ def choisir_fichier():
         controle_coherence_ecriture_sur_pdf('C:\\workspace\\s10\\lms_moodle\\Fiche_de_liaison_Licence_2023-2024.pdf', output_fichier, fichier_csv, liste_de_paires, )
 
         print( "traitement terminé")
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print("Temps écoulé :", elapsed_time, "secondes")
         fenetre.quit()  # Quitter la boucle principale de l'interface graphique
         fenetre.destroy()  # Détruire la fenêtre principale
         
