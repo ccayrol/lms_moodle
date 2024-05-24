@@ -1,4 +1,6 @@
 import datetime
+import dask.dataframe as dd
+import re
 
 
 class Verification:
@@ -36,23 +38,16 @@ class Verification:
 
     @staticmethod
     def verify_nom(nom_etudiant):
-        return nom_etudiant.isalpha()
+        return re.fullmatch(r'[A-Za-z\s]+', nom_etudiant) is not None
 
     @staticmethod
     def verify_prenom(prenom_etudiant):
-        return prenom_etudiant.isalpha()
+        return re.fullmatch(r'[A-Za-z\s]+', prenom_etudiant) is not None
 
     @staticmethod
     def verify_date_validite(date_validite):
         return datetime.date.today() < datetime.datetime.strptime(date_validite, '%Y-%m-%d').date()
 
-    @staticmethod
-    def verify_siren_ou_siret(siren_ou_siret):
-        a = (len(siren_ou_siret) == 9
-             and siren_ou_siret.isdigit())
-        b = (len(siren_ou_siret) == 14
-             and siren_ou_siret.isdigit())
-        return a or b
     @staticmethod
     def verify_date_periode_stage(date_debut, date_fin):
         a = Verification.verify_date_validite(date_debut)
@@ -70,4 +65,25 @@ class Verification:
                 and montant_gratification[3] == "."
                 and montant_gratification[:3].isdigit()
                 and montant_gratification[4:].isdigit())
+    @staticmethod     
+    def verify_siren_ou_siret(Siren_Siret):
+        # Chemin vers le fichier CSV contenant tous les informations des entreprises
+        fichier_csv = 'StockEtablissement_utf8.csv'
+        
+        if len(Siren_Siret) == 9:
+            column_name = "siren"
+        elif len(Siren_Siret) == 14:
+            column_name = "siret"
+        else:
+            return False
+        
+        # Charger le fichier CSV en utilisant Dask en spécifiant les types de données
+        ddf = dd.read_csv(fichier_csv, dtype={column_name : str}, low_memory=False, usecols=[column_name])
+
+        ligne_siren_recherche = ddf[ddf[column_name] == Siren_Siret]
+
+        if len(ligne_siren_recherche.index) != 0:
+            return True
+        else:
+            return False
 

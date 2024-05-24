@@ -13,21 +13,11 @@ def dupliquer_fichier(fichier_base, nom_etudiant):
     return nom_fichier
 
 
-def read_csv_data(csv_file):
+def read_csv_data(csv_file, dtype):
     """Read data from a CSV file into a pandas DataFrame."""
-    return pd.read_csv(csv_file)
+    return pd.read_csv(csv_file, dtype=dtype)
 
 def update_excel_file(excel_file, data, cell_mapping, sheet_name):
-    """
-    Update a specific sheet in an Excel file with data from a DataFrame.
-    
-    Parameters:
-    - excel_file: Path to the Excel file.
-    - data: DataFrame containing the data to be inserted.
-    - cell_mapping: Dictionary mapping column names to Excel cells.
-    - sheet_name: Name of the sheet to be updated.
-    """
-   
      
     error_report = []  
     # Iterate over the DataFrame rows
@@ -81,10 +71,9 @@ def write_error_report_to_csv(error_report, filename="error_report.csv"):
     for report in error_report:
         email = report["Email"]
         if email in existing_reports:
-            # Mettre à jour les erreurs existantes
-            existing_reports[email]["Erreurs"].extend(report["error"])
-            # Supprimer les doublons
-            existing_reports[email]["Erreurs"] = list(set(existing_reports[email]["Erreurs"]))
+            # Remplacer les erreurs existantes par les nouvelles
+            existing_reports[email]["Erreurs"] = report["error"]
+
         else:
             # Ajouter un nouveau rapport
             existing_reports[email] = {
@@ -93,6 +82,7 @@ def write_error_report_to_csv(error_report, filename="error_report.csv"):
                 "Erreurs": report["error"]
             }
     
+    reports_to_write = [report for report in existing_reports.values() if report["Erreurs"]]
     # Écrire les données mises à jour dans le fichier
     with open(filename, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
@@ -101,7 +91,7 @@ def write_error_report_to_csv(error_report, filename="error_report.csv"):
         writer.writeheader()
         
         # Écrire chaque ligne de rapport d'erreur
-        for email, report in existing_reports.items():
+        for  report in reports_to_write:
             writer.writerow({
                 "Nom": report["Nom"],
                 "Email": report["Email"],
@@ -116,11 +106,11 @@ def verif_champ(value, column):
     elif column.startswith("Q02_Nom") or column.startswith("Q12_Nom") or column.startswith("Q18_Nom"):
         return Verification.verify_nom(value)
     elif column == "Q03_TelPortable" or column == "Q21_TelephonePortable":
-        return Verification.verify_numero_telephone_france(str(value))
+        return Verification.verify_numero_telephone_france(value)
     elif column.startswith("Q04_Email") or column.startswith("Q15_Email") or column.startswith("Q20_Email"):
         return Verification.verify_email_etudiant(value) or Verification.verify_email_personnel(value)
     elif column == "Q07_NumeroSiret":
-        return Verification.verify_siren_ou_siret(str(value))
+        return Verification.verify_siren_ou_siret(value)
     elif column == "Q08_CodeAPE":
         return True
     elif column == "Q09_CodeIDCC":
@@ -128,7 +118,7 @@ def verif_champ(value, column):
     elif column == "Q10_OPCOEntreprise":
         return True
     elif column == "Q14_Telephone" or column == "Q19_TelephoneFixe":
-        return Verification.verify_numero_telephone_france(str(value))
+        return Verification.verify_numero_telephone_france(value)
     elif column == "Q16_Fonction":
         return True
     elif column == "Q23_DateDebutContrat":
@@ -149,9 +139,9 @@ def verif_champ(value, column):
     
 
 def remplir_fichier_excel():
-    csv_file = 'Remplissage_Fiche_de_Liaison_Alternant.csv'  # Path to your CSV file
-    excel_file = 'Fiche_de_liaison_Alternant.xlsx'  # Path to your Excel template file
-    sheet_name = 'CFA - Promesse Recrutement'  # Name of the sheet to update
+    csv_file = 'Remplissage_Fiche_de_Liaison_Alternant.csv'  # Le fichier téléchargé depuis moodle
+    excel_file = 'Fiche_de_liaison_Alternant.xlsx'  # Le template à remplire
+    sheet_name = 'CFA - Promesse Recrutement'  # La feuille du template à remplire
 
     # Mapping of DataFrame columns to Excel cells
     cell_mapping = {
@@ -186,8 +176,14 @@ def remplir_fichier_excel():
         "Q29_AutresRemarques" : 'B115'
     }
 
+    dtype={'Q03_TelPortable': str,
+           'Q14_Telephone' : str,
+           'Q19_TelephoneFixe': str,
+           'Q21_TelephonePortable': str,
+           'Q07_NumeroSiret' : str
+           }
     # Read data from the CSV file
-    data = read_csv_data(csv_file)
+    data = read_csv_data(csv_file, dtype)
 
     # Update the specified sheet in the Excel file with the CSV data
     update_excel_file(excel_file, data, cell_mapping, sheet_name)

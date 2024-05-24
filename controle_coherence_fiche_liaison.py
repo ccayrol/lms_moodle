@@ -7,6 +7,7 @@ import tkinter as tk
 from tkinter import filedialog
 import io
 import os
+from traitementAlternance import remplir_fichier_excel
 
 
 
@@ -196,15 +197,20 @@ def write_data_to_pdf(input_pdf, output_pdf, chemin_fichier, liste_coordonnees_t
 
 # Recupération fichier csv en passant par l'utilisateur
 if __name__ == "__main__":
-    # Créer une fenêtre principale
-    fenetre = tk.Tk()
-    fenetre.title("Lire un fichier CSV")
+    var = True
+    if var :
+        remplir_fichier_excel()
+    else:
+        
+        # Créer une fenêtre principale
+        fenetre = tk.Tk()
+        fenetre.title("Lire un fichier CSV")
 
-    # Créer un bouton pour choisir le fichier CSV
-    bouton_choisir = tk.Button(fenetre, text="Choisir un fichier CSV", command=choisir_fichier)
-    bouton_choisir.pack(pady=10)
+        # Créer un bouton pour choisir le fichier CSV
+        bouton_choisir = tk.Button(fenetre, text="Choisir un fichier CSV", command=choisir_fichier)
+        bouton_choisir.pack(pady=10)
 
-    # Lancer la boucle principale de l'interface graphique
-    fenetre.mainloop()
+        # Lancer la boucle principale de l'interface graphique
+        fenetre.mainloop()
  
 
