@@ -1,5 +1,6 @@
 import csv
 import PyPDF2
+import datetime
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import subprocess
@@ -18,6 +19,8 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
     try : 
         cpt = 0
         cpt_liste_coordonnees = 0 
+        nom_etudiant = ""
+        prenom_etudiant = ""
         with open(fichier_csv,'r') as file :
             reader = csv.reader(file, delimiter=',')
             for ligne in reader :
@@ -25,7 +28,11 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
                     cpt += 1 
                     if cpt >= 96 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
                         print("cpt et son element : " + str(cpt) + "" + str(element))
-                        cpt,cpt_liste_coordonnees,liste_coordonnees_texte = remplir_case(element, cpt, cpt_liste_coordonnees,liste_coordonnees_texte)
+                        if cpt == 97 :
+                            nom_etudiant = element
+                        elif cpt == 98 :
+                            prenom_etudiant = element
+                        cpt_liste_coordonnees,liste_coordonnees_texte = remplir_case(element, cpt, cpt_liste_coordonnees,liste_coordonnees_texte)
                         
                                                
                 
@@ -34,7 +41,7 @@ def controle_coherence(fichier_csv, liste_coordonnees_texte) :
     except Exception as e:
         print("Une erreur s'est produite :", e)
         
-    return liste_coordonnees_texte
+    return liste_coordonnees_texte, nom_etudiant, prenom_etudiant
 
 
 def remplir_plusieurs_ligne_a_partir_un_string(element,cpt_liste_coordonnees,liste_coordonnees, cpt) :
@@ -244,7 +251,7 @@ def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
         liste_coordonnees[cpt_liste_coordonnees] = nouvel_element
         cpt_liste_coordonnees += 1
         
-    return(cpt,cpt_liste_coordonnees,liste_coordonnees)
+    return(cpt_liste_coordonnees,liste_coordonnees)
 
 
         
@@ -257,7 +264,7 @@ def choisir_fichier():
     if fichier_csv:
         repertoire_fichier = os.path.dirname(fichier_csv)
         print("repertoire fichier = "+repertoire_fichier)
-        output_fichier = repertoire_fichier +"\\output.pdf"
+        output_fichier = repertoire_fichier 
         liste_de_paires = [] 
         
         ########## PAGE 1 #######################################################
@@ -326,11 +333,11 @@ def choisir_fichier():
         
         liste_de_paires.append((3, (133, 160.5),""))    # FONCTION ET TACHES CONFIEES AU STAGIAIRE 46
         liste_de_paires.append((3, (28, 164),""))
-        liste_de_paires.append((3, (28, 168),""))
+        liste_de_paires.append((3, (28, 167),""))
         # SI TROP LONG PASSER A (30,165), PUIS (30,168)
         liste_de_paires.append((3, (103, 170),""))  # COMETENCES A ACQUERIR PENDANT STAGE 47
         liste_de_paires.append((3, (28, 174),""))
-        liste_de_paires.append((3, (28, 178),""))
+        liste_de_paires.append((3, (28, 177),""))
         # SI TROP LONG, (30,174) PUIS (30, 178)
         
         
@@ -410,7 +417,7 @@ def choisir_fichier():
         ##########REPRESENTANT LEGAL ETABLISSEMENT ACCUEIL #############################################################
         
         liste_de_paires.append((4, (28, 187),""))    #  MONSIEUR 93
-        liste_de_paires.append((4, (40, 187),""))    #  MADAME 94
+        liste_de_paires.append((4, (38.6, 187),""))    #  MADAME 94
         liste_de_paires.append((4, (30, 190),""))    #  NOM PRENOM 95
         #SI TROP LONG, (30,194)
         liste_de_paires.append((4, (36, 200),""))    #  tel 96
@@ -436,7 +443,10 @@ def mm_to_points(mm):
 
 
 def write_data_to_pdf(input_pdf, output_pdf, chemin_fichier, liste_coordonnees_texte):
-    liste_coordonnees_texte = controle_coherence(chemin_fichier, liste_coordonnees_texte)
+    liste_coordonnees_texte, nom_etudiant, prenom_etudiant = controle_coherence(chemin_fichier, liste_coordonnees_texte)
+    today = datetime.date.today()
+    formatted_today = today.strftime("%Y%m%d")
+    output_pdf += "//"+ str(formatted_today) + "_" + nom_etudiant + "_" + prenom_etudiant + "_FL_L3" + ".pdf"
     try :
         with open(input_pdf, 'rb') as file :
 
