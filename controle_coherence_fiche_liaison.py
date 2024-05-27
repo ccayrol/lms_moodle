@@ -317,7 +317,7 @@ def choisir_fichier():
     if fichier_csv:
         repertoire_fichier = os.path.dirname(fichier_csv)
         print("repertoire fichier = "+repertoire_fichier)
-        output_pdf = repertoire_fichier 
+        output_pdf = nom_dossier_fiche_liaison
         liste_de_paires = [] 
         start_time = time.time()
         
@@ -482,7 +482,7 @@ def choisir_fichier():
         
         print("ready to write on pdf\n")
 
-        controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_de_paires, )
+        controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_de_paires)
 
         print( "traitement terminé")
         end_time = time.time()
@@ -547,9 +547,10 @@ def write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte):
 
 # Recupération fichier csv en passant par l'utilisateur
 if __name__ == "__main__":
-    var = True
+    var = False
+    nom_dossier_fiche_liaison, nom_dossier_alternant = creer_dossier()
     if var :
-        nom_dossier, nom_dossier_alternant = creer_dossier()
+        
         remplir_fichier_excel(nom_dossier_alternant)
     else:
         
