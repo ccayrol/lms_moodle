@@ -1,0 +1,5 @@
+dask==2024.5.1
+openpyxl==3.1.2
+pandas==2.2.2
+PyPDF2==3.0.1
+reportlab==4.2.0
