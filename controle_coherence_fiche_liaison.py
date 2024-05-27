@@ -3,7 +3,7 @@ import PyPDF2
 import datetime
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-import subprocess
+from verification import Verification
 import tkinter as tk
 from tkinter import filedialog
 import io
@@ -13,6 +13,30 @@ import multiprocessing
 import time
 
 
+
+###################  FONCTION DE CONTROLE  ######################################################################
+def controle_coherence(liste_coordonnees_texte) :
+    liste_retour = []
+    liste_fonctions_verification = [Verification.verify_numero_etudiant,Verification.verify_nom,Verification.verify_prenom,Verification.verify_code_postal]
+    liste_index_correspondant_verif = ((0,"numero_etudiant"),(1,"nom"),(2,"prenom"),(7,"code_postal"))
+    longueur_liste = len(liste_fonctions_verification)-1
+    print("longueur_liste = " + str(longueur_liste))
+    index = 0 
+    fonction_verification = liste_fonctions_verification[index]
+    while index < longueur_liste :
+        print("dans le while")
+        resultat_verif = fonction_verification(liste_coordonnees_texte[liste_index_correspondant_verif[index][0]][2])
+        print("apres rsesultat verif")
+        if resultat_verif :
+            print("test ok")
+        else :
+            liste_retour.append("erreur au niveau" + liste_index_correspondant_verif[index][1])
+        print("incrementation index")
+        index += 1
+        fonction_verification = liste_fonctions_verification[index]
+        
+    return liste_retour
+        
 
 def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_coordonnees_texte) :
     try : 
@@ -43,7 +67,14 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
                     formatted_today = today.strftime("%Y%m%d")
                     output_pdf += chemin_fichier + "//"+ str(formatted_today) + "_" + nom_etudiant + "_" + prenom_etudiant + "_FL_L3" + ".pdf"
                     print("Le fichier "+ output_pdf + " est en cours d'ecriture...")
-                    write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte)
+                    retour_controle_coherence = controle_coherence(liste_coordonnees_texte)
+                    if (retour_controle_coherence == []) :
+                        write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte)
+                    else :
+                        print("le fichier n'a pas pu être généré, voici les erreurs rencontrées :")
+                        for erreur in retour_controle_coherence :
+                            print(erreur)
+                        
                     
                     # RE INITIALISATION DE TOUTE LES VARIABLE POUR COMMENCER A REMPLIR UN NOUVEAU PDF
                     for i, (num, coords, champ) in enumerate(liste_coordonnees_texte):  
