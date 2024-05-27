@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import filedialog
 import io
 import os
-from traitementAlternance import remplir_fichier_excel
+from traitementAlternance import remplir_fichier_excel, creer_dossier
 import multiprocessing
 import time
 
@@ -549,18 +549,19 @@ def write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte):
 if __name__ == "__main__":
     var = True
     if var :
-        remplir_fichier_excel()
+        nom_dossier, nom_dossier_alternant = creer_dossier()
+        remplir_fichier_excel(nom_dossier_alternant)
     else:
         
         # Créer une fenêtre principale
         fenetre = tk.Tk()
         fenetre.title("Lire un fichier CSV")
 
-    # Créer un bouton pour choisir le fichier CSV
-    bouton_choisir_1 = tk.Button(fenetre, text="Choisir les fichiers CSV et PDF", command=choisir_fichier)
-    bouton_choisir_1.pack(pady=10)
+        # Créer un bouton pour choisir le fichier CSV
+        bouton_choisir_1 = tk.Button(fenetre, text="Choisir les fichiers CSV et PDF", command=choisir_fichier)
+        bouton_choisir_1.pack(pady=10)
 
-    # Lancer la boucle principale de l'interface graphique
-    fenetre.mainloop()
+        # Lancer la boucle principale de l'interface graphique
+        fenetre.mainloop()
  
 
