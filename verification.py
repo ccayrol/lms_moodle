@@ -1,6 +1,6 @@
 import datetime
 import re
-
+from verifier_siren_siret_api import verifier_siren_siret_api
 import dask.dataframe as dd
 
 
@@ -93,3 +93,7 @@ class Verification:
             return True
         else:
             return False
+        
+    @staticmethod
+    def verify_siren_ou_siret_api(Siren_Siret):
+        return verifier_siren_siret_api(Siren_Siret)
