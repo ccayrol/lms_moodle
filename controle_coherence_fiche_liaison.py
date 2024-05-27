@@ -8,33 +8,53 @@ import tkinter as tk
 from tkinter import filedialog
 import io
 import os
-from traitementAlternance import remplir_fichier_excel, creer_dossier
+from traitementAlternance import remplir_fichier_excel, creer_dossier,write_error_report_to_csv
 import multiprocessing
 import time
+import pandas as pd
 
 
 
 ###################  FONCTION DE CONTROLE  ######################################################################
 def controle_coherence(liste_coordonnees_texte) :
     liste_retour = []
-    liste_fonctions_verification = [Verification.verify_numero_etudiant,Verification.verify_nom,Verification.verify_prenom,Verification.verify_code_postal]
-    liste_index_correspondant_verif = ((0,"numero_etudiant"),(1,"nom"),(2,"prenom"),(7,"code_postal"))
+    liste_fonctions_verification = [
+        Verification.verify_numero_etudiant,
+        Verification.verify_nom,
+        Verification.verify_prenom,
+        Verification.verify_code_postal, 
+        Verification.verify_numero_telephone_france,
+        Verification.verify_numero_telephone_france,
+        Verification.verify_numero_telephone_france,
+        Verification.verify_numero_telephone_france, 
+        Verification.verify_email_etudiant, 
+        Verification.verify_email_personnel,
+        Verification.verify_format_nombre_heure_hebdomadaire,
+        
+        ]
+    liste_index_correspondant_verif = ((0,"numero_etudiant"),
+                                       (1,"nom"),
+                                       (2,"prenom"),
+                                       (7,"code_postal"),
+                                       (10,"numero telephone"),(11,"numero telephone"),(34,"numero telephone"),(97,"numero telephone"),
+                                       (12, "email_etudiant"),
+                                       (13, "email_personnel"),
+                                       (57, "nomdre d'heure hedomadaire")
+                                       )
     longueur_liste = len(liste_fonctions_verification)-1
-    print("longueur_liste = " + str(longueur_liste))
     index = 0 
     fonction_verification = liste_fonctions_verification[index]
     while index < longueur_liste :
-        print("dans le while")
+        
         resultat_verif = fonction_verification(liste_coordonnees_texte[liste_index_correspondant_verif[index][0]][2])
-        print("apres rsesultat verif")
-        if resultat_verif :
-            print("test ok")
-        else :
-            liste_retour.append("erreur au niveau" + liste_index_correspondant_verif[index][1])
-        print("incrementation index")
+        if not resultat_verif :
+            liste_retour.append("erreur au niveau : " + liste_index_correspondant_verif[index][1])
         index += 1
         fonction_verification = liste_fonctions_verification[index]
-        
+    resultat_verif = Verification.verify_date_periode_stage(liste_coordonnees_texte[53][2],liste_coordonnees_texte[54][2]) # position dans la liste des coordonnees de debut/fin de stage
+    
+    if not resultat_verif :
+        liste_retour.append("erreur au niveau : date periode du stage")
     return liste_retour
         
 
@@ -48,6 +68,7 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
         prenom_etudiant = ""
         chemin_fichier = output_pdf
         output_pdf = ""
+        error_report = []
         
         #############################   LECTURE DU FICHIER CSV   ####################################################
         with open(fichier_csv,'r') as file :
@@ -55,6 +76,8 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
             for ligne in reader :
                 for element in ligne : 
                     cpt += 1 
+                    
+                    ####################   l'indice 96 est l'indice a partir duquel les elements du csv commencent a nous interesser, avant ce sont des metadonnees qui nous interesse pas 
                     if cpt >= 96 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
                         #print("cpt et son element : " + str(cpt) + "" + str(element))
                         if cpt == 97 :
@@ -74,8 +97,12 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
                         print("le fichier n'a pas pu être généré, voici les erreurs rencontrées :")
                         for erreur in retour_controle_coherence :
                             print(erreur)
-                        
-                    
+                        error_report.append({
+                            "Nom": nom_etudiant,
+                            "Email": liste_coordonnees_texte[12][2],
+                            "error": retour_controle_coherence})
+                        filename = f"{nom_dossier_fiche_liaison}\\error_report.csv"
+                        write_error_report_to_csv(error_report, filename)                
                     # RE INITIALISATION DE TOUTE LES VARIABLE POUR COMMENCER A REMPLIR UN NOUVEAU PDF
                     for i, (num, coords, champ) in enumerate(liste_coordonnees_texte):  
                         if isinstance(champ, str):
@@ -383,23 +410,23 @@ def choisir_fichier():
         liste_de_paires.append((3, (27.5, 150.8),""))   # SI THEMATIQUE TROP LONG CHANGER DE LIGNE ET PASSER A (30,152)
         
         liste_de_paires.append((3, (113, 154.5),""))    # SUJET DE STAGE  45
-        liste_de_paires.append((3, (28, 157.5),"")) # SI SUJET TROP LONG CHANGER DE LIGNE ET PASSER A (30,159)
+        liste_de_paires.append((3, (28, 157.5),"")) # SI SUJET TROP LONG CHANGER DE LIGNE ET PASSER A (30,159) 46
         
-        liste_de_paires.append((3, (133, 160.5),""))    # FONCTION ET TACHES CONFIEES AU STAGIAIRE 46
-        liste_de_paires.append((3, (28, 164),""))
-        liste_de_paires.append((3, (28, 167),""))
+        liste_de_paires.append((3, (133, 160.5),""))    # FONCTION ET TACHES CONFIEES AU STAGIAIRE 47
+        liste_de_paires.append((3, (28, 164),"")) #48
+        liste_de_paires.append((3, (28, 167),"")) #49
         # SI TROP LONG PASSER A (30,165), PUIS (30,168)
-        liste_de_paires.append((3, (103, 170),""))  # COMETENCES A ACQUERIR PENDANT STAGE 47
-        liste_de_paires.append((3, (28, 174),""))
-        liste_de_paires.append((3, (28, 177),""))
+        liste_de_paires.append((3, (103, 170),""))  # COMETENCES A ACQUERIR PENDANT STAGE 50
+        liste_de_paires.append((3, (28, 174),"")) #51
+        liste_de_paires.append((3, (28, 177),""))#52
         # SI TROP LONG, (30,174) PUIS (30, 178)
         
         
         
         ############ DATE HORAIRES DEROULEMENT DU STAGE ###################################
         
-        liste_de_paires.append((3, (53, 190.5),""))    # DEBUT DE STAGE 48
-        liste_de_paires.append((3, (50, 194),""))    # FIN DU STAGE 49
+        liste_de_paires.append((3, (53, 190.5),""))    # DEBUT DE STAGE 53
+        liste_de_paires.append((3, (50, 194),""))    # FIN DU STAGE 54
         liste_de_paires.append((3, (67.3, 197.5),""))    # INTERUPTION EN COURS DU STAGE OUI 50
         liste_de_paires.append((3, (74.7, 197.5),""))    # INTERUPTION EN COURS DU STAGE NON 51
         liste_de_paires.append((3, (77, 201),""))    # DATE DEBUT INTERRUPTION 52
@@ -474,10 +501,10 @@ def choisir_fichier():
         liste_de_paires.append((4, (38.6, 187),""))    #  MADAME 94
         liste_de_paires.append((4, (30, 190),""))    #  NOM PRENOM 95
         #SI TROP LONG, (30,194)
-        liste_de_paires.append((4, (36, 200),""))    #  tel 96
-        liste_de_paires.append((4, (92, 200),""))    #  MAIL 97
-        liste_de_paires.append((4, (45, 207),""))    #  FONCTION 98
-        liste_de_paires.append((4, (36, 217),""))    #  DATE 99
+        liste_de_paires.append((4, (36, 200),""))    #  tel 97
+        liste_de_paires.append((4, (92, 200),""))    #  MAIL 98
+        liste_de_paires.append((4, (45, 207),""))    #  FONCTION 99
+        liste_de_paires.append((4, (36, 217),""))    #  DATE 100
         
         
         print("ready to write on pdf\n")
