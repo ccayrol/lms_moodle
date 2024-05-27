@@ -22,7 +22,7 @@ def creer_dossier():
 
 
 def dupliquer_fichier(fichier_base, nom_etudiant, nom_dossier_alternant):
-    nom_fichier = f"{nom_dossier_alternant}\Fiche_de_liaison_{nom_etudiant}.xlsx"
+    nom_fichier = f"{nom_dossier_alternant}\\Fiche_de_liaison_{nom_etudiant}.xlsx"
     if not os.path.exists(nom_fichier):
         shutil.copy(fichier_base, nom_fichier)
     return nom_fichier
@@ -59,7 +59,7 @@ def update_excel_file(excel_file, data, cell_mapping, sheet_name, nom_dossier_al
             "error": error})
 
         workbook.save(nom_fichier)
-    filename = f"{nom_dossier_alternant}\error_report.csv"
+    filename = f"{nom_dossier_alternant}\\error_report.csv"
     write_error_report_to_csv(error_report, filename)
 
 
@@ -190,6 +190,7 @@ def remplir_fichier_excel(nom_dossier_alternant):
     }
 
     dtype = {'Q03_TelPortable': str,
+             'Q07_NumeroSiret': str,
              'Q14_Telephone': str,
              'Q19_TelephoneFixe': str,
              'Q21_TelephonePortable': str,
