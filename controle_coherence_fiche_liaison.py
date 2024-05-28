@@ -18,44 +18,32 @@ import pandas as pd
 def controle_coherence(liste_coordonnees_texte) :
     liste_retour = []
     liste_fonctions_verification = [
-        Verification.verify_numero_etudiant,
-        Verification.verify_nom,
-        Verification.verify_prenom,
-        Verification.verify_code_postal, 
-        Verification.verify_numero_telephone_france,
-        Verification.verify_numero_telephone_france,
-        Verification.verify_numero_telephone_france,
-        Verification.verify_numero_telephone_france, 
-        Verification.verify_email_etudiant, 
-        Verification.verify_email_personnel,
-        Verification.verify_format_nombre_heure_hebdomadaire,
+        (Verification.verify_numero_etudiant,(0,"numero_etudiant")),
+        (Verification.verify_nom,(1,"nom")),
+        (Verification.verify_prenom,(2,"prenom")),
+        (Verification.verify_code_postal,(7,"code_postal")), 
+        (Verification.verify_numero_telephone_france,(10,"numero telephone")),
+        (Verification.verify_numero_telephone_france,(11,"numero telephone")),
+        (Verification.verify_numero_telephone_france,(34,"numero telephone")),
+        (Verification.verify_numero_telephone_france,(97,"numero telephone")),
+        (Verification.verify_email_etudiant, (12, "email_etudiant")),
+        (Verification.verify_email_personnel, (13, "email_personnel")),
+        #(Verification.verify_siren_ou_siret,(19, "siret"))
         
         ]
-    liste_index_correspondant_verif = ((0,"numero_etudiant"),
-                                       (1,"nom"),
-                                       (2,"prenom"),
-                                       (7,"code_postal"),
-                                       (10,"numero telephone"),(11,"numero telephone"),(34,"numero telephone"),(97,"numero telephone"),
-                                       (12, "email_etudiant"),
-                                       (13, "email_personnel"),
-                                       (57, "nomdre d'heure hedomadaire")
-                                       )
-    longueur_liste = len(liste_fonctions_verification)-1
-    index = 0 
-    fonction_verification = liste_fonctions_verification[index]
-    while index < longueur_liste :
-        
-        resultat_verif = fonction_verification(liste_coordonnees_texte[liste_index_correspondant_verif[index][0]][2])
+    
+    for fonction_verif, (index,label) in liste_fonctions_verification :
+        resultat_verif = fonction_verif(liste_coordonnees_texte[index][2])
         if not resultat_verif :
-            liste_retour.append("erreur au niveau : " + liste_index_correspondant_verif[index][1])
-        index += 1
-        fonction_verification = liste_fonctions_verification[index]
+            liste_retour.append("erreur au niveau : " + label)
+    
     resultat_verif = Verification.verify_date_periode_stage(liste_coordonnees_texte[53][2],liste_coordonnees_texte[54][2]) # position dans la liste des coordonnees de debut/fin de stage
     
     if not resultat_verif :
         liste_retour.append("erreur au niveau : date periode du stage")
+    
     return liste_retour
-        
+    
 
 def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_coordonnees_texte) :
     try : 
