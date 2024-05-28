@@ -574,10 +574,9 @@ def write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte):
 
 # Recupération fichier csv en passant par l'utilisateur
 if __name__ == "__main__":
-    var = False
+    var = True
     nom_dossier_fiche_liaison, nom_dossier_alternant = creer_dossier()
     if var :
-        
         remplir_fichier_excel(nom_dossier_alternant)
     else:
         

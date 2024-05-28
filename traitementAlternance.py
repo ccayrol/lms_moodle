@@ -2,10 +2,8 @@ import csv
 import os
 import shutil
 from datetime import datetime
-
 import pandas as pd
 from openpyxl import load_workbook
-
 from verification import Verification
 
 
@@ -33,8 +31,9 @@ def read_csv_data(csv_file, dtype):
     return pd.read_csv(csv_file, dtype=dtype)
 
 
-def update_excel_file(excel_file, data, cell_mapping, sheet_name, nom_dossier_alternant):
+def create_excel_file(excel_file, data, cell_mapping, sheet_name, nom_dossier_alternant):
     error_report = []
+    
     # Iterate over the DataFrame rows
     for index, row in data.iterrows():
         # Load the Excel file
@@ -49,7 +48,7 @@ def update_excel_file(excel_file, data, cell_mapping, sheet_name, nom_dossier_al
         error = []
         for column, cell in cell_mapping.items():
             if not verif_champ(row[column], column):
-                msg_error = f"Invalid data : {column} - {row[column]}"
+                msg_error = f"Donnée invalide  {column} : {row[column]}, "
                 error.append(msg_error)
             sheet[cell] = row[column]
 
@@ -124,7 +123,7 @@ def verif_champ(value, column):
     elif column.startswith("Q04_Email") or column.startswith("Q15_Email") or column.startswith("Q20_Email"):
         return Verification.verify_email_etudiant(value) or Verification.verify_email_personnel(value)
     elif column == "Q07_NumeroSiret":
-        return True  # Verification.verify_siren_ou_siret(value)
+        return Verification.verify_siren_ou_siret_api(value)
     elif column == "Q08_CodeAPE":
         return True
     elif column == "Q09_CodeIDCC":
@@ -196,8 +195,9 @@ def remplir_fichier_excel(nom_dossier_alternant):
              'Q21_TelephonePortable': str,
              'Q07_NumeroSiret': str
              }
-    # Read data from the CSV file
+    
+    # Lire les données du csv_file
     data = read_csv_data(csv_file, dtype)
 
-    # Update the specified sheet in the Excel file with the CSV data
-    update_excel_file(excel_file, data, cell_mapping, sheet_name, nom_dossier_alternant)
+    # Créer les fiches de liaison alternant pour chaque étudiant
+    create_excel_file(excel_file, data, cell_mapping, sheet_name, nom_dossier_alternant)
