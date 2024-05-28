@@ -97,3 +97,21 @@ class Verification:
     @staticmethod
     def verify_siren_ou_siret_api(Siren_Siret):
         return verifier_siren_siret_api(Siren_Siret)
+    
+    
+    @staticmethod
+    def nombre_heure_hebdomadaire(nombre_heure_hebdomadaire) :
+        nb_heure_int = float(nombre_heure_hebdomadaire)
+        if nb_heure_int > 48 : # max autorisé en France
+            return False
+        else :
+            return True
+      
+    @staticmethod    
+    def nombre_jour_travail_hebdomadaire(nb_jour) :
+        nb_jour_int = int(nb_jour)
+        if nb_jour_int > 6 :
+            return False
+        else :
+            return True
+    

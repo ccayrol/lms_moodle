@@ -28,6 +28,8 @@ def controle_coherence(liste_coordonnees_texte) :
         (Verification.verify_numero_telephone_france,(97,"numero telephone")),
         (Verification.verify_email_etudiant, (12, "email_etudiant")),
         (Verification.verify_email_personnel, (13, "email_personnel")),
+        (Verification.nombre_jour_travail_hebdomadaire,(60, "jour travail hebdomadaire")),
+        (Verification.nombre_heure_hebdomadaire,(63, "nombre d'heures hebdomadaires"))
         #(Verification.verify_siren_ou_siret,(19, "siret"))
         
         ]
@@ -66,7 +68,7 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
                     
                     ####################   l'indice 96 est l'indice a partir duquel les elements du csv commencent a nous interesser, avant ce sont des metadonnees qui nous interesse pas 
                     if cpt >= 96 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
-                        #print("cpt et son element : " + str(cpt) + "" + str(element))
+                        print("cpt et son element : " + str(cpt_liste_coordonnees) + "" + str(element))
                         if cpt == 97 :
                             nom_etudiant = element
                         elif cpt == 98 :
