@@ -6,62 +6,72 @@ import pandas as pd
 from openpyxl import load_workbook
 from verification import Verification
 
-
-# une fonction qui creer deux dossier appeler Dossier_Fiche_de_liaison_date_heure_minutes et Dossier_Alternant_date_heure_minutes à la racine du projet
-# ou _date_heure_minutes est la date et l'heure de la création du dossier ainsi que les minutes
+# Une fonction qui crée deux dossiers appelés Dossier_Fiche_de_liaison_date_heure_minutes 
+# et Dossier_Alternant_date_heure_minutes à la racine du projet
+# où _date_heure_minutes est la date et l'heure de la création du dossier ainsi que les minutes
 def creer_dossier():
+    # Récupérer la date et l'heure actuelle
     date = datetime.now()
     date_heure = date.strftime("%Y-%m-%d_%H-%M")
+    # Créer les noms des dossiers
     dossier_fiche_de_liaison = f"Dossier_Fiche_de_liaison_{date_heure}"
     dossier_alternant = f"Dossier_Alternant_{date_heure}"
+    # Créer les dossiers
     os.mkdir(dossier_fiche_de_liaison)
     os.mkdir(dossier_alternant)
+    # Retourner les noms des dossiers créés
     return dossier_fiche_de_liaison, dossier_alternant
 
-
+# Fonction qui duplique un fichier modèle pour chaque étudiant
 def dupliquer_fichier(fichier_base, nom_etudiant, nom_dossier_alternant):
+    # Créer le chemin complet pour le nouveau fichier
     nom_fichier = f"{nom_dossier_alternant}\\Fiche_de_liaison_{nom_etudiant}.xlsx"
+    # Vérifier si le fichier n'existe pas déjà
     if not os.path.exists(nom_fichier):
+        # Copier le fichier de base vers le nouveau fichier
         shutil.copy(fichier_base, nom_fichier)
     return nom_fichier
 
-
+# Fonction qui lit les données d'un fichier CSV dans un DataFrame pandas
 def read_csv_data(csv_file, dtype):
-    """Read data from a CSV file into a pandas DataFrame."""
+    """Lire les données d'un fichier CSV dans un DataFrame pandas."""
     return pd.read_csv(csv_file, dtype=dtype)
 
-
+# Fonction qui crée et remplit des fichiers Excel à partir des données CSV
 def create_excel_file(excel_file, data, cell_mapping, sheet_name, nom_dossier_alternant):
     error_report = []
-    
-    # Iterate over the DataFrame rows
+
+    # Parcourir les lignes du DataFrame
     for index, row in data.iterrows():
-        # Load the Excel file
+        # Charger le fichier Excel
         nom_fichier = dupliquer_fichier(excel_file, row["Nom complet"], nom_dossier_alternant)
         workbook = load_workbook(nom_fichier)
 
-        # Get the specified sheet
+        # Vérifier si la feuille spécifiée existe
         if sheet_name not in workbook.sheetnames:
-            if sheet_name not in workbook.sheetnames:
-                raise ValueError(f"Sheet {sheet_name} does not exist in the workbook.")
+            raise ValueError(f"Sheet {sheet_name} does not exist in the workbook.")
         sheet = workbook[sheet_name]
         error = []
+        # Remplir les cellules du fichier Excel avec les données du DataFrame
         for column, cell in cell_mapping.items():
             if not verif_champ(row[column], column):
                 msg_error = f"Donnée invalide  {column} : {row[column]}, "
                 error.append(msg_error)
             sheet[cell] = row[column]
 
+        # Ajouter les erreurs à la liste de rapports d'erreur
         error_report.append({
             "Nom": row["Nom complet"],
             "Email": row["Nom d'utilisateur"],
             "error": error})
 
+        # Sauvegarder le fichier Excel
         workbook.save(nom_fichier)
+    # Écrire le rapport d'erreur dans un fichier CSV
     filename = f"{nom_dossier_alternant}\\error_report.csv"
     write_error_report_to_csv(error_report, filename)
 
-
+# Fonction qui écrit un rapport d'erreur dans un fichier CSV
 def write_error_report_to_csv(error_report, filename):
     # Les noms des champs pour le fichier CSV
     fieldnames = ["Nom", "Email", "Erreurs"]
@@ -87,7 +97,6 @@ def write_error_report_to_csv(error_report, filename):
         if email in existing_reports:
             # Remplacer les erreurs existantes par les nouvelles
             existing_reports[email]["Erreurs"] = report["error"]
-
         else:
             # Ajouter un nouveau rapport
             existing_reports[email] = {
@@ -112,7 +121,7 @@ def write_error_report_to_csv(error_report, filename):
                 "Erreurs": ', '.join(report["Erreurs"])  # Convertir la liste d'erreurs en une chaîne
             })
 
-
+# Fonction qui vérifie la validité des champs
 def verif_champ(value, column):
     if column.startswith("Q01_Prenom") or column.startswith("Q11_Prenom") or column.startswith("Q17_Prenom"):
         return Verification.verify_prenom(value)
@@ -149,13 +158,13 @@ def verif_champ(value, column):
     else:
         return True
 
-
+# Fonction principale qui remplit les fichiers Excel à partir des données CSV
 def remplir_fichier_excel(nom_dossier_alternant):
-    csv_file = 'Remplissage_Fiche_de_Liaison_Alternant.csv'  # Le fichier téléchargé depuis moodle
-    excel_file = 'Fiche_de_liaison_Alternant.xlsx'  # Le template à remplire
-    sheet_name = 'CFA - Promesse Recrutement'  # La feuille du template à remplire
+    csv_file = 'Remplissage_Fiche_de_Liaison_Alternant.csv'  # Le fichier téléchargé depuis Moodle
+    excel_file = 'Fiche_de_liaison_Alternant.xlsx'  # Le modèle à remplir
+    sheet_name = 'CFA - Promesse Recrutement'  # La feuille du modèle à remplir
 
-    # Mapping of DataFrame columns to Excel cells
+    # Mapping des colonnes du DataFrame aux cellules Excel
     cell_mapping = {
         'Q01_Prenom': 'C19',
         "Q02_Nom": 'F19',
@@ -196,7 +205,7 @@ def remplir_fichier_excel(nom_dossier_alternant):
              'Q07_NumeroSiret': str
              }
     
-    # Lire les données du csv_file
+    # Lire les données du fichier CSV
     data = read_csv_data(csv_file, dtype)
 
     # Créer les fiches de liaison alternant pour chaque étudiant

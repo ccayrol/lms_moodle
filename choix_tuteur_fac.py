@@ -1,6 +1,7 @@
 # Classe Tuteur
 class Tuteur:
     def __init__(self, nom, prenom, telephone, fonction, mail):
+        """Initialise un objet Tuteur avec un nom, prénom, téléphone, fonction et email."""
         self.nom = nom
         self.prenom = prenom
         self.telephone = telephone
@@ -8,6 +9,7 @@ class Tuteur:
         self.mail = mail
 
     def __str__(self):
+        """Renvoie une représentation sous forme de chaîne de caractères de l'objet Tuteur."""
         return f"{self.prenom} {self.nom}, {self.fonction}, Tel: {self.telephone}, Email: {self.mail}"
 
 # Dictionnaire des tuteurs
@@ -32,18 +34,28 @@ tuteurs = {
     18: Tuteur("TREVISOL", "Gilbert", None, None, "gilberttrevisiol@gmail.com")
 }
 
-# Fonction pour choisir une Tuteur
+# Fonction pour choisir un Tuteur
 def choisir_Tuteur(tuteurs, etudiant):
+    """
+    Permet de choisir un tuteur parmi une liste pour un étudiant donné.
+    Affiche la liste des tuteurs et demande à l'utilisateur de choisir un tuteur par son identifiant.
+    
+    Arguments:
+    tuteurs -- dictionnaire des tuteurs disponibles
+    etudiant -- nom de l'étudiant pour lequel le tuteur est choisi
+    """
     print(f"Veuillez choisir un tuteur parmi la liste suivante pour l'étudiant {etudiant} :")
     for id_tuteur, tuteur in tuteurs.items():
         print(f"{id_tuteur}: {tuteur}")
 
     while True:
-        id = int(input("Entrez l'identifiant de la Tuteur que vous choisissez: ").strip())
-        if id in tuteurs:
-            tuteur = tuteurs[id]
-            print(f"Vous avez choisi : {tuteur}")
-            return tuteur
-        else:
-            print("id invalide ou non trouvé. Veuillez réessayer.")
-
+        try:
+            id = int(input("Entrez l'identifiant du tuteur que vous choisissez: ").strip())
+            if id in tuteurs:
+                tuteur = tuteurs[id]
+                print(f"Vous avez choisi : {tuteur}")
+                return tuteur
+            else:
+                print("Identifiant invalide ou non trouvé. Veuillez réessayer.")
+        except ValueError:
+            print("Veuillez entrer un numéro valide.")
