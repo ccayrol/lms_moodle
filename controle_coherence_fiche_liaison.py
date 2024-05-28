@@ -68,7 +68,6 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
                     
                     ####################   l'indice 96 est l'indice a partir duquel les elements du csv commencent a nous interesser, avant ce sont des metadonnees qui nous interesse pas 
                     if cpt >= 96 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
-                        print("cpt et son element : " + str(cpt_liste_coordonnees) + "" + str(element))
                         if cpt == 97 :
                             nom_etudiant = element
                         elif cpt == 98 :
