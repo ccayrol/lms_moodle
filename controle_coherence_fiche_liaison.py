@@ -9,7 +9,6 @@ from tkinter import filedialog
 import io
 import os
 from traitementAlternance import remplir_fichier_excel, creer_dossier,write_error_report_to_csv
-import multiprocessing
 import time
 import pandas as pd
 
@@ -515,8 +514,8 @@ def choisir_fichier():
         end_time = time.time()
         elapsed_time = end_time - start_time
         print("Temps écoulé :", elapsed_time, "secondes")
-        fenetre.quit()  # Quitter la boucle principale de l'interface graphique
-        fenetre.destroy()  # Détruire la fenêtre principale
+        fenetre_initiale.quit()  # Quitter la boucle principale de l'interface graphique
+        fenetre_initiale.destroy()  # Détruire la fenêtre principale
         
         
 
@@ -571,16 +570,13 @@ def write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte):
 
 
 
-
-# Recupération fichier csv en passant par l'utilisateur
-if __name__ == "__main__":
-    var = True
-    nom_dossier_fiche_liaison, nom_dossier_alternant = creer_dossier()
-    if var :
+def on_selection():
+    if var.get() == "alternance":
         remplir_fichier_excel(nom_dossier_alternant)
+        fenetre_initiale.quit()
+        fenetre_initiale.destroy()
     else:
-        
-        # Créer une fenêtre principale
+       # Créer une fenêtre principale
         fenetre = tk.Tk()
         fenetre.title("Lire un fichier CSV")
 
@@ -588,7 +584,34 @@ if __name__ == "__main__":
         bouton_choisir_1 = tk.Button(fenetre, text="Choisir les fichiers CSV et PDF", command=choisir_fichier)
         bouton_choisir_1.pack(pady=10)
 
-        # Lancer la boucle principale de l'interface graphique
+     # Lancer la boucle principale de l'interface graphique
         fenetre.mainloop()
+        fenetre.quit()
+        fenetre.destroy()
+
+# Recupération fichier csv en passant par l'utilisateur
+if __name__ == "__main__":
+    nom_dossier_fiche_liaison, nom_dossier_alternant = creer_dossier()
+    # Créer la fenêtre principale
+    fenetre_initiale = tk.Tk()
+    fenetre_initiale.title("Choix de l'option")
+
+    # Variable pour stocker la sélection
+    var = tk.StringVar(value="")
+    # Créer les boutons radio pour choisir entre "stage" et "alternance"
+    radio_stage = tk.Radiobutton(fenetre_initiale, text="Stage fiche de liaison", variable=var, value="stage")
+    radio_alternance = tk.Radiobutton(fenetre_initiale, text="Alternance fichier excel", variable=var, value="alternance")
+    
+    radio_stage.pack(pady=5)
+    radio_alternance.pack(pady=5)
+
+    # Créer un bouton pour valider la sélection
+    bouton_valider = tk.Button(fenetre_initiale, text="Valider", command=on_selection)
+    bouton_valider.pack(pady=10)
+    
+    # Lancer la boucle principale de l'interface graphique
+    fenetre_initiale.mainloop()
+        
+        
  
 
