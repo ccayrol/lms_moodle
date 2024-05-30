@@ -6,6 +6,7 @@ from reportlab.lib.pagesizes import letter
 from verification import Verification
 import tkinter as tk
 from tkinter import filedialog
+import tkinter.messagebox
 import io
 import os
 from traitementAlternance import remplir_fichier_excel, creer_dossier,write_error_report_to_csv
@@ -47,7 +48,7 @@ def controle_coherence(liste_coordonnees_texte) :
     return liste_retour
     
 
-def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_coordonnees_texte) :
+def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_coordonnees_texte, nom_dossier_fiche_liaison) :
     try : 
         
         cpt = 0
@@ -323,7 +324,7 @@ def remplir_case(element,cpt, cpt_liste_coordonnees, liste_coordonnees) :
 
         
         
-def choisir_fichier():
+def choisir_fichier(nom_dossier_fiche_liaison):
     # Ouvrir une boîte de dialogue pour choisir le fichier CSV
     fichier_csv = filedialog.askopenfilename(title = "Choisir le fichier CSV contenant les informations des étudiants",filetypes=[("Fichiers CSV", "*.csv")])
     input_pdf = filedialog.askopenfilename(title="Choisir la fiche de liaison L1/L2/L3 vierge", filetypes=[("PDF files", "*.pdf")])
@@ -332,6 +333,7 @@ def choisir_fichier():
     if fichier_csv:
         repertoire_fichier = os.path.dirname(fichier_csv)
         print("repertoire fichier = "+repertoire_fichier)
+        print("nom dossier fiche de liaison : "+ nom_dossier_fiche_liaison)
         output_pdf = nom_dossier_fiche_liaison
         liste_de_paires = [] 
         start_time = time.time()
@@ -494,10 +496,8 @@ def choisir_fichier():
         liste_de_paires.append((4, (45, 207),""))    #  FONCTION 99
         liste_de_paires.append((4, (36, 217),""))    #  DATE 100
         
-        
-        print("ready to write on pdf\n")
 
-        controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_de_paires)
+        controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_de_paires, nom_dossier_fiche_liaison)
 
         print( "traitement terminé")
         end_time = time.time()
@@ -560,39 +560,65 @@ def write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte):
 
 
 def on_selection():
+    if var.get() == "" :
+        tkinter.messagebox.showinfo("Aucune option choisie", "Veuillez sélectionner une option.")
     if var.get() == "alternance":
+        choix_alternant = True
+        choix_stage_fiche_liaison = False
+        nom_dossier_fiche_liaison,nom_dossier_alternant = creer_dossier(choix_alternant,choix_stage_fiche_liaison)
+    # Créer la fenêtre principalecreer_dossier(choix_alternant,choix_stage_fiche_liaison)
         remplir_fichier_excel(nom_dossier_alternant)
         fenetre_initiale.quit()
         fenetre_initiale.destroy()
-    else:
+    elif var.get() == "stage":
+        choix_alternant = False
+        choix_stage_fiche_liaison = True
+        nom_dossier_fiche_liaison, nom_dossier_alternant = creer_dossier(choix_alternant,choix_stage_fiche_liaison)
        # Créer une fenêtre principale
         fenetre = tk.Tk()
         fenetre.title("Lire un fichier CSV")
 
         # Créer un bouton pour choisir le fichier CSV
-        bouton_choisir_1 = tk.Button(fenetre, text="Choisir les fichiers CSV et PDF", command=choisir_fichier)
+        bouton_choisir_1 = tk.Button(fenetre, text="Choisir les fichiers CSV et PDF", command=lambda :choisir_fichier(nom_dossier_fiche_liaison))
         bouton_choisir_1.pack(pady=10)
 
      # Lancer la boucle principale de l'interface graphique
         fenetre.mainloop()
         fenetre.quit()
         fenetre.destroy()
+    elif var.get() == "both":
+        choix_alternant = True
+        choix_stage_fiche_liaison = True
+        nom_dossier_fiche_liaison, nom_dossier_alternant = creer_dossier(choix_alternant,choix_stage_fiche_liaison)
+        remplir_fichier_excel(nom_dossier_alternant)
+        fenetre = tk.Tk()
+        fenetre.title("Lire un fichier CSV")
 
+        bouton_choisir_1 = tk.Button(fenetre, text="Choisir les fichiers CSV et PDF", command=lambda :choisir_fichier(nom_dossier_fiche_liaison))
+        bouton_choisir_1.pack(pady=10)
+
+        fenetre.mainloop()
+        fenetre.quit()
+        fenetre.destroy()
+        
 # Recupération fichier csv en passant par l'utilisateur
 if __name__ == "__main__":
-    nom_dossier_fiche_liaison, nom_dossier_alternant = creer_dossier()
     # Créer la fenêtre principale
     fenetre_initiale = tk.Tk()
     fenetre_initiale.title("Choix de l'option")
+    nom_dossier_fiche_liaison = ""
+    nom_dossier_alternant = ""
 
     # Variable pour stocker la sélection
     var = tk.StringVar(value="")
     # Créer les boutons radio pour choisir entre "stage" et "alternance"
     radio_stage = tk.Radiobutton(fenetre_initiale, text="Stage fiche de liaison", variable=var, value="stage")
     radio_alternance = tk.Radiobutton(fenetre_initiale, text="Alternance fichier excel", variable=var, value="alternance")
+    radio_both = tk.Radiobutton(fenetre_initiale, text="Stage fiche de liaison + Alternance fichier excel", variable=var, value="both")
     
     radio_stage.pack(pady=5)
     radio_alternance.pack(pady=5)
+    radio_both.pack(pady=5)
 
     # Créer un bouton pour valider la sélection
     bouton_valider = tk.Button(fenetre_initiale, text="Valider", command=on_selection)

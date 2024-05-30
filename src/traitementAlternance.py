@@ -9,18 +9,37 @@ from verification import Verification
 # Une fonction qui crée deux dossiers appelés Dossier_Fiche_de_liaison_date_heure_minutes 
 # et Dossier_Alternant_date_heure_minutes à la racine du projet
 # où _date_heure_minutes est la date et l'heure de la création du dossier ainsi que les minutes
-def creer_dossier():
+def creer_dossier(choix_alternant, choix_stage_fiche_liaison):
     # Récupérer la date et l'heure actuelle
     date = datetime.now()
     date_heure = date.strftime("%Y-%m-%d_%H-%M")
     # Créer les noms des dossiers
-    dossier_fiche_de_liaison = f"..\\Dossier_Fiche_de_liaison_{date_heure}"
-    dossier_alternant = f"..\\Dossier_Alternant_{date_heure}"
+     # Obtenir le chemin du répertoire courant
+    chemin_courant = os.path.dirname(os.path.abspath(__file__))
+
+    # Remonter d'un niveau pour aller à la racine du projet
+    chemin_racine_projet = os.path.abspath(os.path.join(chemin_courant, '..'))
+    
+    dossier_fiche_de_liaison = ''
+    dossier_alternant = ''
+   
+
     # Créer les dossiers
-    os.mkdir(dossier_fiche_de_liaison)
-    os.mkdir(dossier_alternant)
+    if choix_alternant and choix_stage_fiche_liaison :
+        dossier_fiche_de_liaison = os.path.join(chemin_racine_projet, f"Dossier_Fiche_de_liaison_{date_heure}")
+        dossier_alternant = os.path.join(chemin_racine_projet, f"Dossier_Alternant_{date_heure}")
+        os.mkdir(dossier_fiche_de_liaison)
+        os.mkdir(dossier_alternant)
+    elif choix_alternant :
+        dossier_alternant = os.path.join(chemin_racine_projet, f"Dossier_Alternant_{date_heure}")
+        os.mkdir(dossier_alternant)
+    else :
+        dossier_fiche_de_liaison = os.path.join(chemin_racine_projet, f"Dossier_Fiche_de_liaison_{date_heure}")
+        os.mkdir(dossier_fiche_de_liaison)
+
     # Retourner les noms des dossiers créés
     return dossier_fiche_de_liaison, dossier_alternant
+
 
 # Fonction qui duplique un fichier modèle pour chaque étudiant
 def dupliquer_fichier(fichier_base, nom_etudiant, nom_dossier_alternant):
@@ -160,9 +179,14 @@ def verif_champ(value, column):
 
 # Fonction principale qui remplit les fichiers Excel à partir des données CSV
 def remplir_fichier_excel(nom_dossier_alternant):
-    csv_file = '..\\Fichier_Entrant\\Remplissage_Fiche_de_Liaison_Alternant.csv'  # Le fichier téléchargé depuis Moodle
-    excel_file = '..\\Fichier_Entrant\\Fiche_de_liaison_Alternant.xlsx'  # Le modèle à remplir
+    chemin_courant = os.path.dirname(os.path.abspath(__file__))
+
+    # Remonter d'un niveau pour aller à la racine du projet
+    chemin_racine_projet = os.path.abspath(os.path.join(chemin_courant, '..'))
+    csv_file = os.path.join(chemin_racine_projet,'Fichier_Entrant\\Remplissage_Fiche_de_Liaison_Alternant.csv') # Le fichier téléchargé depuis Moodle
+    excel_file = os.path.join(chemin_racine_projet, 'Fichier_Entrant\\Fiche_de_liaison_Alternant.xlsx') # Le modèle à remplir
     sheet_name = 'CFA - Promesse Recrutement'  # La feuille du modèle à remplir
+    
 
     # Mapping des colonnes du DataFrame aux cellules Excel
     cell_mapping = {
