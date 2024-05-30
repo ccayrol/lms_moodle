@@ -19,18 +19,19 @@ import pandas as pd
 def controle_coherence(liste_coordonnees_texte) :
     liste_retour = []
     liste_fonctions_verification = [
-        (Verification.verify_numero_etudiant,(0,"numero_etudiant")),
-        (Verification.verify_nom,(1,"nom")),
-        (Verification.verify_prenom,(2,"prenom")),
-        (Verification.verify_code_postal,(7,"code_postal")), 
-        (Verification.verify_numero_telephone_france,(10,"numero telephone")),
-        (Verification.verify_numero_telephone_france,(11,"numero telephone")),
-        (Verification.verify_numero_telephone_france,(34,"numero telephone")),
-        (Verification.verify_numero_telephone_france,(97,"numero telephone")),
-        (Verification.verify_email_etudiant, (12, "email_etudiant")),
-        (Verification.verify_email_personnel, (13, "email_personnel")),
-        (Verification.nombre_jour_travail_hebdomadaire,(60, "jour travail hebdomadaire")),
-        (Verification.nombre_heure_hebdomadaire,(63, "nombre d'heures hebdomadaires"))
+        (Verification.verify_numero_etudiant,(0,"Identification de l' etudiant : numero_etudiant")),
+        (Verification.verify_nom,(1,"Identification de l' etudiant : nom")),
+        (Verification.verify_prenom,(2,"Identification de l' etudiant : prenom")),
+        (Verification.verify_code_postal,(7,"Identification de l' etudiant : code_postal")), 
+        (Verification.verify_numero_telephone_france,(10,"Identification de l' etudiant : Téléphone")),
+        (Verification.verify_numero_telephone_france,(11,"Identification de l' etudiant : Téléphone portable")),
+        (Verification.verify_numero_telephone_france,(29,"Etablissement d'accueil : Téléphone/Fax de l'établissement")),
+        (Verification.verify_numero_telephone_france,(34,"Tuteur de stage dans l'organisme d'accueil : Téléphone/Fax")),
+        (Verification.verify_numero_telephone_france,(97,"Representant légal de l'établissement d'accueil : N° de Tél/fax de l'établissement")),
+        (Verification.verify_email_etudiant, (12, "Identification de l' etudiant : email_etudiant")),
+        (Verification.verify_email_personnel, (13, "Identification de l' etudiant : email_personnel")),
+        (Verification.nombre_jour_travail_hebdomadaire,(60, "Dates/Horaires Déroulement du stage : jour travail hebdomadaire")),
+        (Verification.nombre_heure_hebdomadaire,(63, "Dates/Horaires Déroulement du stage : nombre d'heures hebdomadaires"))
         #(Verification.verify_siren_ou_siret,(19, "siret"))
         
         ]
@@ -38,12 +39,12 @@ def controle_coherence(liste_coordonnees_texte) :
     for fonction_verif, (index,label) in liste_fonctions_verification :
         resultat_verif = fonction_verif(liste_coordonnees_texte[index][2])
         if not resultat_verif :
-            liste_retour.append("erreur au niveau : " + label)
+            liste_retour.append(label)
     
     resultat_verif = Verification.verify_date_periode_stage(liste_coordonnees_texte[53][2],liste_coordonnees_texte[54][2]) # position dans la liste des coordonnees de debut/fin de stage
     
     if not resultat_verif :
-        liste_retour.append("erreur au niveau : date periode du stage")
+        liste_retour.append("Dates/Horaires Déroulement du stage : date periode du stage")
     
     return liste_retour
     
@@ -61,12 +62,11 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
         error_report = []
         
         #############################   LECTURE DU FICHIER CSV   ####################################################
-        with open(fichier_csv,'r') as file :
+        with open(fichier_csv,'r', encoding='utf-8') as file :
             reader = csv.reader(file, delimiter=',')
             for ligne in reader :
                 for element in ligne : 
                     cpt += 1 
-                    
                     ####################   l'indice 96 est l'indice a partir duquel les elements du csv commencent a nous interesser, avant ce sont des metadonnees qui nous interesse pas 
                     if cpt >= 96 and cpt_liste_coordonnees < len(liste_coordonnees_texte) :
                         if cpt == 97 :
@@ -83,9 +83,7 @@ def controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, list
                     if (retour_controle_coherence == []) :
                         write_data_to_pdf(input_pdf, output_pdf, liste_coordonnees_texte)
                     else :
-                        print("le fichier n'a pas pu être généré, voici les erreurs rencontrées :")
-                        for erreur in retour_controle_coherence :
-                            print(erreur)
+                        print("le fichier n'a pas pu être généré, pour plus d'informations aller voir le fichier error_report.csv")
                         error_report.append({
                             "Nom": nom_etudiant,
                             "Email": liste_coordonnees_texte[12][2],
@@ -331,12 +329,9 @@ def choisir_fichier(nom_dossier_fiche_liaison):
     
     # Si un fichier a été sélectionné, lire son contenu
     if fichier_csv:
-        repertoire_fichier = os.path.dirname(fichier_csv)
-        print("repertoire fichier = "+repertoire_fichier)
-        print("nom dossier fiche de liaison : "+ nom_dossier_fiche_liaison)
         output_pdf = nom_dossier_fiche_liaison
         liste_de_paires = [] 
-        start_time = time.time()
+        #start_time = time.time()
         
         ########## PAGE 1 #######################################################
         
@@ -500,9 +495,9 @@ def choisir_fichier(nom_dossier_fiche_liaison):
         controle_coherence_ecriture_sur_pdf(input_pdf, output_pdf, fichier_csv, liste_de_paires, nom_dossier_fiche_liaison)
 
         print( "traitement terminé")
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        print("Temps écoulé :", elapsed_time, "secondes")
+       # end_time = time.time()
+        #elapsed_time = end_time - start_time
+        #print("Temps écoulé :", elapsed_time, "secondes")
         fenetre_initiale.quit()  # Quitter la boucle principale de l'interface graphique
         fenetre_initiale.destroy()  # Détruire la fenêtre principale
         
