@@ -31,8 +31,8 @@ def controle_coherence(liste_coordonnees_texte) :
         (Verification.verify_email_etudiant, (12, "Identification de l' etudiant : email_etudiant")),
         (Verification.verify_email_personnel, (13, "Identification de l' etudiant : email_personnel")),
         (Verification.nombre_jour_travail_hebdomadaire,(60, "Dates/Horaires Déroulement du stage : jour travail hebdomadaire")),
-        (Verification.nombre_heure_hebdomadaire,(63, "Dates/Horaires Déroulement du stage : nombre d'heures hebdomadaires"))
-        #(Verification.verify_siren_ou_siret,(19, "siret"))
+        (Verification.nombre_heure_hebdomadaire,(63, "Dates/Horaires Déroulement du stage : nombre d'heures hebdomadaires")),
+        (Verification.verify_siren_ou_siret_api,(19, "Etablissement d'accueil : siret"))
         
         ]
     
