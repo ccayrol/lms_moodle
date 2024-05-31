@@ -43,5 +43,6 @@
    a. Assurez-vous que l'environnement virtuel est activé : .\Nom_environnement\Scripts\Activate
    b. Exécutez le script main.py : python main.py
    c. Pour desactiver l'environnement virtuel, lancer la commande : deactivate
+   d. Pour supprimer un environnement virtuel, lancer la commande : rm -r Nom_environnement
 
 # Si tout est configuré correctement, le script main.py devrait s'exécuter sans problème.

@@ -589,7 +589,7 @@ def on_selection():
         fenetre = tk.Tk()
         fenetre.title("Lire un fichier CSV")
 
-        bouton_choisir_1 = tk.Button(fenetre, text="Choisir les fichiers CSV et PDF", command=lambda :choisir_fichier(nom_dossier_fiche_liaison))
+        bouton_choisir_1 = tk.Button(fenetre, text="Choisir le fichier Remplissage_Fiche_de_Liaison_Stage.csv et le PDF pour le module Stage", command=lambda :choisir_fichier(nom_dossier_fiche_liaison))
         bouton_choisir_1.pack(pady=10)
 
         fenetre.mainloop()
